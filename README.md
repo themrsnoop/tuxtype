@@ -1,2 +1,0 @@
-# tuxtype
-Linux monkey type

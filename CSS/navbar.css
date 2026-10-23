@@ -1,0 +1,28 @@
+/* I know the standard is to organize navbars in <ul><li><li>...etc. but <divs> are just so much easier to work with in my opinion. */
+
+.Navbar
+{
+    width: 100vw;
+    position: absolute;
+    height: 50px;
+
+    display: flex;
+    align-content: center;
+}
+
+.Nav
+{
+    text-decoration: none;
+    color: rgb(255, 235, 56);
+    font-size: 2ch;
+}
+
+/* extras */
+
+/* ensures first navbar element (the logo) has padding */
+.Navbar:first-child { padding-left: 5ch; }
+
+/* likewise with the last */
+.Navbar:last-child { padding-right: 5ch; }
+
+.Nav img { height: 100%; }

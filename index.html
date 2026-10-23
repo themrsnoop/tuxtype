@@ -14,16 +14,23 @@
 <body>
     <div class="Navbar">
         <a href="index.html" class="Nav"><p>>/TUXTYPE</p></a>
+        <div class="line"></div>
     </div>
+
+
     <div class="TypeContainer">
+        <div class="TimerContainer">
+            <div class="Clock"><p id="Clock">//30:00</p></div>
+        </div>
         <!-- <textarea> is a newer better alternative to <input (text)> -->
-        <textarea class="TypeBox"></textarea>
+        <textarea class="TextBox" id="TextBox"></textarea>
         <div class="WordContainer">
             <!--normal span-->
             <span class="immovableForce">tux@linux:~$</span>
             <!-- random ahh placeholder text that essentially just serves as a (lined up) background-->
-            <p>-r | ls sudo cat grep find cd nano update & disown -r | ls sudo cat grep find cd nano update & disown -r | ls sudo cat grep find cd nano update & disown -r | ls sudo cat grep find cd nano update & disown -r | ls sudo cat grep find cd nano update & disown -r | ls sudo cat grep find cd nano update & disown -r | ls sudo cat grep find cd nano update & disown -r | ls sudo cat grep find cd nano update & disown -r | ls sudo cat grep find cd nano update & disown -r | ls sudo cat grep find cd nano update & disown -r | ls sudo cat grep find cd nano update & disown -r | ls sudo cat grep find cd nano update & disown -r | ls sudo cat grep find cd nano update & disown -r | ls sudo cat grep find cd nano update & disown </p>
+            <p id="targetText"></p>
         </div>
     </div>
+    <script src="JS/index.js"></script>
 </body>
 </html>

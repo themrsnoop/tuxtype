@@ -26,3 +26,13 @@
 .Navbar:last-child { padding-right: 5ch; }
 
 .Nav img { height: 100%; }
+
+.Navbar .line
+{
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 50px;
+    background-color: rgba(255, 255, 255, 0.1);
+    height: 1px;
+}

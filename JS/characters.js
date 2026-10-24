@@ -104,7 +104,7 @@ function renderContainer()
 
 //INPUT
 let currentKey = "";
-let currentCharacterIndex = 0;
+let currentCharacterIndex = -1;
 
 let currentCharacter;
 
@@ -122,10 +122,7 @@ function keyInput(event)
 
     if (keyname == "Shift") return;
 
-    if (keyname == "ArrowLeft" || keyname == "Backspace")
-    {
-        updateCharacterIndex(-1);
-    }
+    if (keyname == "ArrowLeft" || keyname == "Backspace") updateCharacterIndex(-1);
     else updateCharacterIndex(1);
 
 
@@ -173,3 +170,6 @@ function load()
 document.addEventListener("DOMContentLoaded", function() {
     load();
 });
+
+//updates caret position on window resize
+window.addEventListener('resize', updateCaretPosition);

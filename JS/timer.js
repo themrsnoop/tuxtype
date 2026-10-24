@@ -1,6 +1,3 @@
-
-
-
 //basic timer
 let currentMiliseconds = 30000;
 let runningTimer = false;
@@ -34,11 +31,7 @@ function Timer()
 
 function load()
 {
-    generateText();
-
-    const textBox = document.getElementById("TextBox");
-
-    textBox.addEventListener("input", function() {
+    window.addEventListener("keydown", function() {
         if (!runningTimer)
         {
             Timer();
@@ -47,3 +40,4 @@ function load()
     });
 
 }
+

@@ -1,27 +1,4 @@
 
-//temporary function that randomly fills the "target" words on page reload.
-function generateText()
-{
-    const targetText = document.getElementById("targetText");
-
-    //im too lazy to manually make an array
-    const linuxWordsStr = "ls sudo cat grep mkdir cp mv rm find cd nano update & disown pacman apt fastfetch | git pwd echo pip curl";
-    const linuxWords = linuxWordsStr.split(" ");
-
-    const words = 100;
-
-    //ensures reset
-    targetText.innerHTML = "";
-
-    for (let i = 0; i < words; i++)
-    {
-        //returns random number [0 - (arraylen)]
-        let randomIndex = Math.floor(Math.random() * linuxWords.length);
-
-        //appends a random word to the text
-        targetText.innerHTML += ` ${linuxWords[randomIndex]}`;
-    }
-}
 
 
 //basic timer

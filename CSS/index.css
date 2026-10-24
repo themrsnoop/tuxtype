@@ -12,7 +12,20 @@ body, html
     --font-size: 4ch;
 }
 
+.pending
+{
+    color: rgba(255, 255, 255, 0.4);
+}
 
+.correct
+{
+    color: white;
+}
+
+.incorrect
+{
+    color: tomato;
+}
 
 
 
@@ -69,9 +82,8 @@ body, html
     margin: 0;
 }
 
-#jar_array
+#letterContainer
 {
-    opacity: 0.4;
     padding: 0;
     margin: 0;
     position: absolute;

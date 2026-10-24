@@ -116,7 +116,7 @@ body, html
     z-index: 2;
     left: 0;
     top: 0;
-    transform: translate(2.25ch, 0.5ch);
+    transform: translate(0, 0.5ch);
 
     transition: top 0.1s ease-out, left 0.1s ease-out; 
 }

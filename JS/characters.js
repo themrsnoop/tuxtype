@@ -120,6 +120,8 @@ function keyInput(event)
     console.log(`${keyname} was pressed!`);
     currentKey = keyname;
 
+    if (keyname == "Shift") return;
+
     if (keyname == "ArrowLeft" || keyname == "Backspace")
     {
         updateCharacterIndex(-1);
@@ -127,15 +129,16 @@ function keyInput(event)
     else updateCharacterIndex(1);
 
 
-
     currentCharacter = Array.from(keyContainer.children)[currentCharacterIndex];
+
+    updateCaretPosition();
 
     //lowercase to ensure campatiability 
     let correctCharacter = characters[currentCharacterIndex].char.toLowerCase();
     
     if (keyname == "Backspace")
     {
-        updateCharacterArray(currentCharacter, "pending");
+        updateSpanClass(Array.from(keyContainer.children)[currentCharacterIndex + 1], "pending");
     } 
     else if (correctCharacter == keyname.toLowerCase())
     {
@@ -146,6 +149,19 @@ function keyInput(event)
     console.log(`${currentCharacterIndex}`);
     currentCharacter = Array.from(keyContainer.children)[currentCharacterIndex];
 }
+
+function updateCaretPosition()
+{
+    const caret = document.getElementById("caret");
+
+    const currentCharacterRect = currentCharacter.getBoundingClientRect();
+    caret.style.top = `${currentCharacterRect.top}px`;
+    caret.style.left = `${currentCharacterRect.left}px`;
+}
+
+
+
+
 
 function load()
 {

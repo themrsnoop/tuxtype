@@ -104,3 +104,17 @@ body, html
 }
 
 .Clock p { font-size: 2.5ch; }
+
+
+
+#caret
+{
+    background-color: white;
+    height: 5ch;
+    width: 2px;
+    position: absolute;
+    z-index: 2;
+    left: 0;
+    top: 0;
+    transform: translate(2.25ch, 0.5ch);
+}

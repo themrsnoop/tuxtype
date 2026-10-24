@@ -69,7 +69,7 @@ body, html
     margin: 0;
 }
 
-.WordContainer p
+#jar_array
 {
     opacity: 0.4;
     padding: 0;

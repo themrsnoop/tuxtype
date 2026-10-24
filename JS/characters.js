@@ -1,4 +1,5 @@
 import { randMand } from "./linux_gacha.js";
+import { give_meaning } from "./linux_meaning.js";
 const data = await (await fetch("linux_commands.json")).json();
 let keyContainer;
 //CHARACTER DEFINITIONS
@@ -53,6 +54,18 @@ function updateSpanClass(span, classString)
     span.classList.add(classString);
 }
 
+function update_meaning(text)
+{
+    let meaningBox = document.getElementById("Meaning");
+    let stack = give_meaning(data, text)
+    let output = "";
+    for (let i = 0; i<stack.length; i++){
+        output += stack[i].label + ": " + stack[i].text + "\n"
+    }
+
+    meaningBox.innerHTML = output
+}
+
 function isValidIndex(array, i) { return (i >= 0 && i < array.length); }
 
 //permanent function that randomly fills the character array on page reload.
@@ -64,6 +77,7 @@ function generateText()
         updateCharacterArray(letter);
     }
     //adds a space per word
+    update_meaning(string_text)
     updateCharacterArray(" ");
     renderContainer();
 }
@@ -72,6 +86,7 @@ function generateText()
 function renderContainer()
 {
     keyContainer = document.getElementById("letterContainer");
+    keyContainer.innerHTML = ""; // thomas you naughty dog why did you not do this
     characters.forEach(character => {
         let newLetter = document.createElement('span');
         newLetter.innerHTML = character.char;
@@ -110,8 +125,20 @@ function updateCharacterIndex(modifier)
     currentCharacterIndex = Math.max((currentCharacterIndex + modifier), 0);
 }
 
+function new_line(){
+    generateText()
+    updateCharacterIndex(-Number.MAX_SAFE_INTEGER)
+    updateCaretPosition()
+}
+
 function keyInput(event)
 {
+    if (!runningTimer)
+    {
+        Timer();
+        runningTimer = true;
+    }
+
     const keyname = event.key;
     console.log(`${keyname} was pressed!`);
     currentKey = keyname;
@@ -124,10 +151,15 @@ function keyInput(event)
         updateCaretPosition();
         return;
     }
+    else if (keyname == "Enter"){
+        //if (characters[currentCharacterIndex]!=characters.length-1) return;
+        new_line()
+        return
+    }
 
     //terry davis move
     if (keyname.length !== 1) return;
-    if (currentCharacterIndex >= characters.length) return;
+    if (!isValidIndex(characters, currentCharacterIndex)) return;
 
     currentCharacter = keyContainer.children[currentCharacterIndex];
 
@@ -141,6 +173,38 @@ function keyInput(event)
 
     updateCharacterIndex(1);
     updateCaretPosition();
+}
+
+//MISC----------------------------------------
+//basic timer
+let currentMiliseconds = 30000;
+let runningTimer = false;
+function Timer()
+{
+    if (currentMiliseconds <= 0)
+    {
+        runningTimer = false;
+        return;
+    }
+
+    currentMiliseconds -= 10;
+    let currentSeconds = Math.floor(currentMiliseconds / 1000);
+
+    //ensures all numbers have at least 2 digits | (2 = "02")
+    let userFriendlySeconds = String(currentSeconds).padStart(2, '0');
+
+    //cant use raw miliseconds because its always in the thousands
+    let simplifiedMiliseconds = (currentMiliseconds % 1000) / 10;
+
+    //ensures all numbers have at least 2 digits | (2 = "02")
+    let userFriendlyMS = String(simplifiedMiliseconds).padStart(2, '0');
+
+    const clock = document.getElementById("Clock");
+    clock.innerHTML = `//${userFriendlySeconds}:${userFriendlyMS}`;
+
+    setTimeout(() => {
+        Timer();
+    }, 10);
 }
 
 function load()

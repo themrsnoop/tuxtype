@@ -118,5 +118,5 @@ body, html
     top: 0;
     transform: translate(0, 0.5ch);
 
-    transition: top 0.1s ease-out, left 0.1s ease-out; 
+    transition: top 0.074s ease-out, left 0.076s ease-out;
 }

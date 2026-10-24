@@ -1,5 +1,6 @@
 import { randMand } from "./linux_gacha.js";
 import { give_meaning } from "./linux_meaning.js";
+import { updateCaretPosition } from './caret.js';
 const data = await (await fetch("linux_commands.json")).json();
 let keyContainer;
 //CHARACTER DEFINITIONS
@@ -96,23 +97,6 @@ function renderContainer()
     });
 }
 
-//CARET
-//moves the caret to the character that is about to be typed.
-//if the whole text has been typed, it sits at the right edge of the last character.
-function updateCaretPosition()
-{
-    const caret = document.getElementById("caret");
-    if (!caret || !keyContainer || keyContainer.children.length === 0) return;
-
-    const lastIndex = keyContainer.children.length - 1;
-    const atEnd = currentCharacterIndex > lastIndex;
-    const target = keyContainer.children[atEnd ? lastIndex : currentCharacterIndex];
-
-    const rect = target.getBoundingClientRect();
-    caret.style.top = `${rect.top}px`;
-    caret.style.left = `${atEnd ? rect.right : rect.left}px`;
-}
-
 //INPUT
 let currentKey = "";
 let currentCharacterIndex = 0;
@@ -128,15 +112,22 @@ function updateCharacterIndex(modifier)
 function new_line(){
     generateText()
     updateCharacterIndex(-Number.MAX_SAFE_INTEGER)
-    updateCaretPosition()
+    updateCaretPosition(currentCharacterIndex)
 }
 
 function keyInput(event)
 {
+    //basically a general do once check now
     if (!runningTimer)
     {
         Timer();
         runningTimer = true;
+
+        //removes blinking on typing start
+        const caret = document.getElementById("caret");
+        const caret_ghost = document.getElementById("caret_ghost");
+        caret.className = "";
+        caret_ghost.className = "";
     }
 
     const keyname = event.key;
@@ -148,7 +139,7 @@ function keyInput(event)
         updateCharacterIndex(-1);
         currentCharacter = keyContainer.children[currentCharacterIndex];
         updateSpanClass(currentCharacter, "pending");
-        updateCaretPosition();
+        updateCaretPosition(currentCharacterIndex);
         return;
     }
     else if (keyname == "Enter"){
@@ -172,8 +163,10 @@ function keyInput(event)
     else updateSpanClass(currentCharacter, "incorrect");
 
     updateCharacterIndex(1);
-    updateCaretPosition();
+    updateCaretPosition(currentCharacterIndex);
 }
+
+
 
 //MISC----------------------------------------
 //basic timer
@@ -210,9 +203,14 @@ function Timer()
 function load()
 {
     generateText();
-    updateCaretPosition(); //place caret on the first character
+    updateCaretPosition(currentCharacterIndex); //place caret on the first character
 
     window.addEventListener("keydown", keyInput);
+
+    window.addEventListener("keyup", function(){
+        updateCaretPosition(currentCharacterIndex);
+    });
+
 }
 
 load();

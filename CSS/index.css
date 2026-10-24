@@ -107,7 +107,7 @@ body, html
 
 
 
-#caret
+#caret, #caret_ghost
 {
     background-color: white;
     height: 5ch;
@@ -119,4 +119,22 @@ body, html
     transform: translate(0, 0.5ch);
 
     transition: top 0.074s ease-out, left 0.076s ease-out;
+}
+
+#caret_ghost
+{
+    background-color: rgba(255, 255, 255, 0.8);
+    transition: width 0.1s ease-out;
+    transition: top 0.074s ease-out, left 0.076s ease-out;
+}
+
+.blink
+{
+    animation: anim_blink 1s ease-in-out infinite;
+}
+
+@keyframes anim_blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
 }

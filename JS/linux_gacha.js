@@ -8,7 +8,7 @@ const MAX_POSITIONAL_ARGS = 2;
 const FALLBACK_VALUES = ["file.txt", "example"];
 
 const VALUES_BY_PLACEHOLDER = [
-{ matches: /FILE|PATH|SRC/i,           values: ["homework.txt", "app.log", "/etc/pam.d/common-auth", "plans.txt", "latest.log", "fix.patch"] },
+{ matches: /FILE|PATH|SRC/i,           values: ["homework.txt", "app.log", "/etc/pam.d/common-auth", "plans.txt", "latest.log", "fix.patch", "nuclear_launch_codes.txt", "passwords.txt"] },
 { matches: /DIR|DEST/i,                values: ["/etc/shadow", "~/homework", "./src", "./"] },
 { matches: /PATTERN|STRING|TEXT/i,     values: ["error", "TODO:", "main", "swap"] },
 { matches: /URL/i,                     values: ["http://flesh.com", "https://crazyshit.com", "https://google.com", "https://hipaa.gov"] },

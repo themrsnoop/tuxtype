@@ -1,3 +1,6 @@
+import { randMand } from "./linux_gacha.js";
+const data = await (await fetch("linux_commands.json")).json();
+let keyContainer;
 //CHARACTER DEFINITIONS
 
 const char_state = {
@@ -13,7 +16,7 @@ const character = {
 }
 
 const current_char_array = {
-    charray: 
+    charray:
     [
         {char:'p', real: null, state: char_state.Pending},
         {char:'l', real: null, state: char_state.Pending},
@@ -37,10 +40,10 @@ const characters = current_char_array.charray;
 //CONTAINER RENDERING /---------------------------------------------------------------------------------------------------------------------------------------------------------------------------/
 
 //random helpers
-function updateCharacterArray(c) {  
+function updateCharacterArray(c) {
     const newCharacterObject = { char: c, real: null, state: char_state.Pending };
     characters.push(newCharacterObject);
-    console.log(`adding ${c}`); 
+    console.log(`adding ${c}`);
 }
 
 function updateSpanClass(span, classString)
@@ -52,37 +55,16 @@ function updateSpanClass(span, classString)
 
 function isValidIndex(array, i) { return (i >= 0 && i < array.length); }
 
-//temporary function that randomly fills the character array on page reload.
+//permanent function that randomly fills the character array on page reload.
 function generateText()
 {
-    //im too lazy to manually make an array
-    const linuxWordsStr = "ls sudo cat grep mkdir cp mv rm find cd nano update & disown pacman apt fastfetch | git pwd echo pip curl";
-    const linuxWords = linuxWordsStr.split(" ");
-
-    const words = 100;
-
-    //clears the array and ensures reset
+    let string_text = randMand(data); //returns string
     characters.length = 0;
-
-    for (let i = 0; i < words; i++)
-    {
-        //returns random number [0 - (arraylen)]
-        let randomIndex = Math.floor(Math.random() * linuxWords.length);
-
-        //appends a random word to the text
-        let randomWord = linuxWords[randomIndex];
-
-        if (!isValidIndex(linuxWords, randomIndex)) continue;
-
-
-        //goes letter by letter
-        for (let i = 0; i < randomWord.length; i++) {
-            let letter = randomWord[i]
-            updateCharacterArray(letter);
-        }
-        //adds a space per word
-        updateCharacterArray(" ");
+    for (const letter of string_text) {
+        updateCharacterArray(letter);
     }
+    //adds a space per word
+    updateCharacterArray(" ");
     renderContainer();
 }
 
@@ -99,12 +81,26 @@ function renderContainer()
     });
 }
 
+//CARET
+//moves the caret to the character that is about to be typed.
+//if the whole text has been typed, it sits at the right edge of the last character.
+function updateCaretPosition()
+{
+    const caret = document.getElementById("caret");
+    if (!caret || !keyContainer || keyContainer.children.length === 0) return;
 
+    const lastIndex = keyContainer.children.length - 1;
+    const atEnd = currentCharacterIndex > lastIndex;
+    const target = keyContainer.children[atEnd ? lastIndex : currentCharacterIndex];
 
+    const rect = target.getBoundingClientRect();
+    caret.style.top = `${rect.top}px`;
+    caret.style.left = `${atEnd ? rect.right : rect.left}px`;
+}
 
 //INPUT
 let currentKey = "";
-let currentCharacterIndex = -1;
+let currentCharacterIndex = 0;
 
 let currentCharacter;
 
@@ -120,56 +116,42 @@ function keyInput(event)
     console.log(`${keyname} was pressed!`);
     currentKey = keyname;
 
-    if (keyname == "Shift") return;
-
-    if (keyname == "ArrowLeft" || keyname == "Backspace") updateCharacterIndex(-1);
-    else updateCharacterIndex(1);
-
-
-    currentCharacter = Array.from(keyContainer.children)[currentCharacterIndex];
-
-    updateCaretPosition();
-
-    //lowercase to ensure campatiability 
-    let correctCharacter = characters[currentCharacterIndex].char.toLowerCase();
-    
-    if (keyname == "Backspace")
+    if (keyname == "ArrowLeft" || keyname == "Backspace")
     {
-        updateSpanClass(Array.from(keyContainer.children)[currentCharacterIndex + 1], "pending");
-    } 
-    else if (correctCharacter == keyname.toLowerCase())
+        updateCharacterIndex(-1);
+        currentCharacter = keyContainer.children[currentCharacterIndex];
+        updateSpanClass(currentCharacter, "pending");
+        updateCaretPosition();
+        return;
+    }
+
+    //terry davis move
+    if (keyname.length !== 1) return;
+    if (currentCharacterIndex >= characters.length) return;
+
+    currentCharacter = keyContainer.children[currentCharacterIndex];
+
+    let correctCharacter = characters[currentCharacterIndex].char.toLowerCase();
+
+    if (correctCharacter == keyname.toLowerCase())
     {
         updateSpanClass(currentCharacter, "correct");
     }
     else updateSpanClass(currentCharacter, "incorrect");
 
-    console.log(`${currentCharacterIndex}`);
-    currentCharacter = Array.from(keyContainer.children)[currentCharacterIndex];
+    updateCharacterIndex(1);
+    updateCaretPosition();
 }
-
-function updateCaretPosition()
-{
-    const caret = document.getElementById("caret");
-
-    const currentCharacterRect = currentCharacter.getBoundingClientRect();
-    caret.style.top = `${currentCharacterRect.top}px`;
-    caret.style.left = `${currentCharacterRect.left}px`;
-}
-
-
-
-
 
 function load()
 {
     generateText();
+    updateCaretPosition(); //place caret on the first character
 
     window.addEventListener("keydown", keyInput);
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    load();
-});
+load();
 
 //updates caret position on window resize
 window.addEventListener('resize', updateCaretPosition);

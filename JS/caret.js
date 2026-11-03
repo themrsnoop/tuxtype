@@ -60,20 +60,11 @@ function calculateInertia()
     inertia = currentPosition - lastPosition;
 
     lastPosition = currentPosition;
+    //calculateInertia() runs on tick which means this runs on tick()
     setCaretPos();
 }
 
 //import { lerp } from './math.js';
 
-let lastFrameTime;
-let deltaTime;
-function caretTick()
-{
-    const now = new Date();
-    //deltatime is in ms (integer)
-    deltaTime = now - lastFrameTime;
-    lastFrameTime = now;
-    calculateInertia();
-    requestAnimationFrame(caretTick);
-}
-caretTick();
+//called by the master tick function in tick.js now.
+export function caretTick() { calculateInertia(); }

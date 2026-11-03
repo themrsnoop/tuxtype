@@ -14,15 +14,42 @@
 <body>
     <div class="Navbar">
         <a href="index.html" class="Nav"><p>>/TUXTYPE</p></a>
+        <div class="vr"></div>
         <div class="line"></div>
+        <!-- color coded version
+        <a href="index.html" class="Nav" style="color: rgb(56, 122, 255);"><p>ARCH</p></a>
+        <a href="index.html" class="Nav" style="color: rgb(89, 56, 255);"><p>FEDORA</p></a>
+        <a href="index.html" class="Nav" style="color: rgb(255, 56, 86);"><p>DEBIAN</p></a>
+        <a href="index.html" class="Nav" style="color: rgb(56, 149, 255);"><p>NIXOS</p></a>
+        <a href="index.html" class="Nav" style="color: rgb(169, 56, 255);"><p>GENTOO</p></a>
+        <a href="index.html" class="Nav" style="color: rgb(255, 59, 56);"><p>BSD</p></a>
+        -->
+        <a href="index.html" class="Nav"><p>BASH-ONLY</p><div class="selectedDistro"></div></a>
+
+        <a href="index.html" class="Nav"><p>ARCH</p></a>
+        <a href="index.html" class="Nav"><p>FEDORA</p></a>
+        <a href="index.html" class="Nav"><p>DEBIAN</p></a>
+        <!-- stinky no lifers -->
+        <a href="index.html" class="Nav"><p>NIXOS</p></a>
+        <a href="index.html" class="Nav"><p>GENTOO</p></a>
+        <a href="index.html" class="Nav"><p>BSD</p></a>
+    </div>
+
+    <div id="completionContainer">
+        <div class="completionContent">
+            <img src="Recources/eesh.webp" alt="">
+            <h1>tuxtype totally isnt currently breaking in the backgorund. chekc angai ltaer for wen we fiurged ou psot-gaem analyzsizz.</h1>
+        </div>
     </div>
 
     <div id="caret" class="blink"></div>
     <div id="caret_ghost" class="blink"></div>
 
     <div class="TypeContainer">
-        <div class="TimerContainer">
-            <div class="Clock"><p id="Clock">//30:00</p></div>
+        <div class="ExtrasContainer">
+            <div class="Clock"><p id="Clock">30:00 |</p></div>
+            <div><p id="words">cmds: 0 |</p></div>
+            <div class="wpm"><p id="wpm">wpm: 0</p></div>
         </div>
         <div class="WordContainer">
             <!--just a normal span-->
@@ -35,6 +62,7 @@
     </div>
 
     <script src="JS/timer.js"></script>
+    <script type="module" src="JS/tick.js"></script>
     <script type = "module" src="JS/characters.js"></script>
 </body>
 </html>

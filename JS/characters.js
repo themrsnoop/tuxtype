@@ -1,6 +1,7 @@
 import { randMand } from "./linux_gacha.js";
 import { give_meaning } from "./linux_meaning.js";
 import { updateCaretPosition } from './caret.js';
+import { Timer } from './timer.js';
 const data = await (await fetch("linux_commands.json")).json();
 let keyContainer;
 //CHARACTER DEFINITIONS
@@ -11,11 +12,6 @@ const char_state = {
     Pending: 'pending'
 }
 
-const character = {
-    char: 'a',
-    real: null,
-    state: char_state.Pending
-}
 
 const current_char_array = {
     charray:
@@ -48,11 +44,86 @@ function updateCharacterArray(c) {
     console.log(`adding ${c}`);
 }
 
+
+//ALSO updates the charArray bc the enum was never actually being updated from .Pending!
 function updateSpanClass(span, classString)
 {
-    //resets array
+    //spanStuff
     span.className = "";
     span.classList.add(classString);
+}
+
+function updateCharacterState(index, enumString)
+{
+    if (!isValidIndex(characters, index)) return;
+
+    switch (enumString.toLowerCase()) {
+        case "pending":
+            characters[index].state = char_state.Pending;
+            break;
+        case "correct":
+            characters[index].state = char_state.Correct;
+            break;
+        case "incorrect":
+            characters[index].state = char_state.Incorrect;
+            break;
+        default:
+            break;
+    }
+}
+
+//used in tick() to find wpm
+let archivedCorrect = 0;
+
+function archiveWordCount() { archivedCorrect += returnCorrectWordCount() - 1; }
+
+//used in tick to ensure word count is carried over on text regeneration
+export function returnArchivedWordCount() { return archivedCorrect; }
+
+//iterates through every collection of characters (defined below) and tallies up the ones that are COMPLETELY correct
+export function returnCorrectWordCount()
+{
+    let correctWords = 0;
+
+    //you know damn well I didnt write this monstrosity, it just treats the string something like this
+    //"file-system" = "file system"
+    //"file.txt" = "file txt"
+    //"/home/etc/sshd" = "home etc sshd"
+    //"nuclear_launch_code" = "nuclear launch code"
+    let plainText = characters.map(c => c.char).join("").replace(/(?<=\w)[-_](?=\w)|[\/~.]/g, " ");
+    
+    const promptWords = plainText.split(" ");
+
+    //index is used to bridge both arrays together
+    let index = 0;
+    for (let w = 0; w < promptWords.length; w++)
+    {
+        let wordFullyCorrect = true;
+        for (let c = 0; c < promptWords[w].length; c++)
+        {
+            if (characters[index + c].state !== char_state.Correct) //this word was NOT fully correct
+            {
+                wordFullyCorrect = false;
+                break;
+            } 
+        }
+        if (wordFullyCorrect) { correctWords += 1; }
+        index += promptWords[w].length + 1; //+1 for space
+    }
+
+    return correctWords;
+}
+
+export function returnTotalWordCount()
+{
+    //plainText = all chars in "character" combined into a single string;
+    const plainText = characters.map(c => c.char).join("");
+
+    //words[] = plainText separated by spaces 
+    const words = plainText.split(" ");
+
+    //it would persistently be 1+ otherwise so im just lazily subtracting one.
+    return words.length - 1;
 }
 
 function update_meaning(text)
@@ -87,7 +158,7 @@ function generateText()
 function renderContainer()
 {
     keyContainer = document.getElementById("letterContainer");
-    keyContainer.innerHTML = ""; // thomas you naughty dog why did you not do this
+    keyContainer.innerHTML = ""; // thomas you naughty dog why did you not do this | whoops
     characters.forEach(character => {
         let newLetter = document.createElement('span');
         newLetter.innerHTML = character.char;
@@ -110,9 +181,31 @@ function updateCharacterIndex(modifier)
 }
 
 function new_line(){
-    generateText()
-    updateCharacterIndex(-Number.MAX_SAFE_INTEGER)
-    updateCaretPosition(currentCharacterIndex)
+    archiveWordCount()
+    generateText();
+    updateCharacterIndex(-Number.MAX_SAFE_INTEGER);
+    updateCaretPosition(currentCharacterIndex);
+
+}
+
+//there is only one bool and its stored here. therefore, it must also be set here by timer.js
+let runningTimer;
+export function resetTimer() { runningTimer = false };
+
+import { beginTrackingWPM } from './tick.js';
+
+function initialize()
+{
+    Timer();
+    runningTimer = true;
+
+    //removes blinking on typing start
+    const caret = document.getElementById("caret");
+    const caret_ghost = document.getElementById("caret_ghost");
+    caret.className = "";
+    caret_ghost.className = "";
+
+    beginTrackingWPM();
 }
 
 function keyInput(event)
@@ -120,14 +213,7 @@ function keyInput(event)
     //basically a general do once check now
     if (!runningTimer)
     {
-        Timer();
-        runningTimer = true;
-
-        //removes blinking on typing start
-        const caret = document.getElementById("caret");
-        const caret_ghost = document.getElementById("caret_ghost");
-        caret.className = "";
-        caret_ghost.className = "";
+        initialize();
     }
 
     const keyname = event.key;
@@ -139,6 +225,7 @@ function keyInput(event)
         updateCharacterIndex(-1);
         currentCharacter = keyContainer.children[currentCharacterIndex];
         updateSpanClass(currentCharacter, "pending");
+        updateCharacterState(currentCharacterIndex, "pending");
         updateCaretPosition(currentCharacterIndex);
         return;
     }
@@ -159,46 +246,18 @@ function keyInput(event)
     if (correctCharacter == keyname.toLowerCase())
     {
         updateSpanClass(currentCharacter, "correct");
+        updateCharacterState(currentCharacterIndex, "correct");
     }
-    else updateSpanClass(currentCharacter, "incorrect");
+    else 
+    {
+        updateSpanClass(currentCharacter, "incorrect");
+        updateCharacterState(currentCharacterIndex, "incorrect");
+    }
 
     updateCharacterIndex(1);
     updateCaretPosition(currentCharacterIndex);
 }
 
-
-
-//MISC----------------------------------------
-//basic timer
-let currentMiliseconds = 30000;
-let runningTimer = false;
-function Timer()
-{
-    if (currentMiliseconds <= 0)
-    {
-        runningTimer = false;
-        return;
-    }
-
-    currentMiliseconds -= 10;
-    let currentSeconds = Math.floor(currentMiliseconds / 1000);
-
-    //ensures all numbers have at least 2 digits | (2 = "02")
-    let userFriendlySeconds = String(currentSeconds).padStart(2, '0');
-
-    //cant use raw miliseconds because its always in the thousands
-    let simplifiedMiliseconds = (currentMiliseconds % 1000) / 10;
-
-    //ensures all numbers have at least 2 digits | (2 = "02")
-    let userFriendlyMS = String(simplifiedMiliseconds).padStart(2, '0');
-
-    const clock = document.getElementById("Clock");
-    clock.innerHTML = `//${userFriendlySeconds}:${userFriendlyMS}`;
-
-    setTimeout(() => {
-        Timer();
-    }, 10);
-}
 
 function load()
 {
@@ -206,11 +265,9 @@ function load()
     updateCaretPosition(currentCharacterIndex); //place caret on the first character
 
     window.addEventListener("keydown", keyInput);
-
     window.addEventListener("keyup", function(){
-        updateCaretPosition(currentCharacterIndex);
+        //updateCaretPosition(currentCharacterIndex);
     });
-
 }
 
 load();

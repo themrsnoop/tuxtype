@@ -95,16 +95,17 @@ body, html
 .immovableForce { color: white; }
 
 
-.TimerContainer
+.ExtrasContainer
 {
     bottom: 105%;
     left: 0;
     position: absolute;
-    width: 10vw;
+    width: 25vw;
+    display: flex;
+    font-size: 2.5ch;
+    
+    gap: 2ch;
 }
-
-.Clock p { font-size: 2.5ch; }
-
 
 
 #caret, #caret_ghost
@@ -137,4 +138,47 @@ body, html
     0% { opacity: 1; }
     50% { opacity: 0; }
     100% { opacity: 1; }
+}
+
+
+#completionContainer
+{
+    visibility: hidden;
+    width: 80vw;
+    height: 80vh;
+    background-color: white;
+    position: fixed;
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: black;
+    z-index: 3;
+}
+
+.completionContent
+{
+    position: relative;
+    width: 50%;
+    border: 1px solid;
+
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 15ch;
+}
+
+#completionContainer img
+{
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 50%;
+}
+
+#completionContainer h1
+{
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50%;
 }

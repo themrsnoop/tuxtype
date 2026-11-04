@@ -59,3 +59,16 @@
     transform: translateY(-4px);
     background-color: rgba(255, 235, 56, 0.75);
 }
+
+.themeButton
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2ch;
+    position: absolute;
+    right: 5%;
+    height: 5ch;
+}
+
+.themeButton svg { height: 60%; }

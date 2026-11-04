@@ -1,6 +1,7 @@
 import { caretTick } from './caret.js';
 import { returnCorrectWordCount } from './characters.js';
 import { returnArchivedWordCount } from './characters.js';
+import { lerpColor } from './math.js';
 
 //tick ticks
 let lastFrameTime;
@@ -37,6 +38,12 @@ function updateWPM()
 
     wpmText.innerHTML = `wpm: ${Math.round(wpm)}`;
     cmdsTxt.innerHTML = `cmds: ${Math.round(words)} |`;
+
+    //updates color
+
+    if (wpm < 40) { wpmText.style.color = "rgb(255, 100, 100)"; }
+    else if (wpm > 80) { wpmText.style.color = "rgb(100, 255, 113)"; }
+    else wpmText.style.color = lerpColor(255, 162, 100, 170, 255, 100, ((wpm - 40) / 40));
 
     //loops
     setTimeout(() => {updateWPM();}, wpmTime * 1000.0);

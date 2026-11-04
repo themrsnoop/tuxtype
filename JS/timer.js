@@ -1,7 +1,7 @@
 import { resetTimer } from './characters.js';
 const completionContainer = document.getElementById("completionContainer");
 
-let currentMiliseconds = 30000;
+let currentMiliseconds = 45000;
 export function Timer()
 {
     if (currentMiliseconds <= 0) 

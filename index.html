@@ -12,31 +12,18 @@
     <link rel="icon" href="Recources/Branding/tuxascii.png">
 </head>
 <body>
-    <div class="Navbar">
+    <div id="Navbar">
         <a href="index.html" class="Nav"><p>>/TUXTYPE</p></a>
         <div class="vr"></div>
         <div class="line"></div>
-        <!-- color coded version
-        <a href="index.html" class="Nav" style="color: rgb(56, 122, 255);"><p>ARCH</p></a>
-        <a href="index.html" class="Nav" style="color: rgb(89, 56, 255);"><p>FEDORA</p></a>
-        <a href="index.html" class="Nav" style="color: rgb(255, 56, 86);"><p>DEBIAN</p></a>
-        <a href="index.html" class="Nav" style="color: rgb(56, 149, 255);"><p>NIXOS</p></a>
-        <a href="index.html" class="Nav" style="color: rgb(169, 56, 255);"><p>GENTOO</p></a>
-        <a href="index.html" class="Nav" style="color: rgb(255, 59, 56);"><p>BSD</p></a>
-        -->
-        <a href="index.html" class="Nav"><p>KERNEL</p></a>
-        <a href="index.html" class="Nav"><p>ARCH</p><div class="selectedDistro"></div></a>
-        <a href="index.html" class="Nav"><p>FEDORA</p></a>
-        <a href="index.html" class="Nav"><p>DEBIAN</p></a>
+        <button class="Nav"><p>KERNEL</p></button>
+        <button class="Nav"><p>ARCH</p><div id="selectedDistro"></div></button>
+        <button class="Nav"><p>FEDORA</p></button>
+        <button class="Nav"><p>DEBIAN</p></button>
         <!-- stinky no lifers -->
-        <a href="index.html" class="Nav"><p>NIXOS</p></a>
-        <a href="index.html" class="Nav"><p>GENTOO</p></a>
-        <a href="index.html" class="Nav"><p>BSD</p></a> <!-- you want me to write a bsd script vro -->
-
-
-        <button class="Nav themeButton">
-            <svg viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="layer1"> <path d="M 2 1 L 2 6 L 17 6 L 17 4 L 18 4 L 18 7.0976562 L 9.390625 9.0117188 C 9.1623253 9.0632199 9.0001305 9.2659634 9 9.5 L 9 10.587891 C 8.4014079 10.799525 8.000891 11.365098 8 12 L 8 20 L 11 20 L 11 12 C 10.999109 11.365098 10.598592 10.799525 10 10.587891 L 10 9.9023438 L 18.609375 7.9882812 C 18.837675 7.93678 18.999869 7.7340366 19 7.5 L 19 3.5 C 18.999539 3.2240488 18.775951 3.000461 18.5 3 L 17 3 L 17 1 L 2 1 z M 3 2 L 16 2 L 16 5 L 3 5 L 3 2 z M 9.5 11.5 C 9.7761424 11.5 10 11.723858 10 12 L 10 19 L 9 19 L 9 12 C 9 11.723858 9.2238576 11.5 9.5 11.5 z " style="fill:rgba(255, 235, 56, 0.75); fill-opacity:1; stroke:none; stroke-width:0px;"></path> </g> </g></svg>
-        </button>
+        <button class="Nav"><p>NIXOS</p></button>
+        <button class="Nav"><p>GENTOO</p></button>
+        <button class="Nav"><p>BSD</p></button>
     </div>
 
     <div id="completionContainer">

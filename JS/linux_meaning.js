@@ -1,3 +1,5 @@
+import { get_current_data } from "./distro_selector.js";
+
 function find_node(data, name) {
   return data.commands[name] ?? data.builtins[name];
 }
@@ -6,7 +8,7 @@ function form_part(label, text) {
   return text ? { label, text } : null;
 }
 
-export function give_meaning(data, commandText) {
+function give_meaning(data, commandText) {
   const [name, ...words] = commandText.split(" ");
   let node = find_node(data, name);
   const parts = [form_part(name, node.desc)];
@@ -22,4 +24,16 @@ export function give_meaning(data, commandText) {
   }
 
   return parts.filter(Boolean);
+}
+
+export function update_meaning(text)
+{
+  let meaningBox = document.getElementById("Meaning");
+  let stack = give_meaning(get_current_data(), text)
+  let output = "";
+  for (let i = 0; i<stack.length; i++){
+    output += stack[i].label + ": " + stack[i].text + "\n"
+  }
+
+  meaningBox.innerHTML = output
 }

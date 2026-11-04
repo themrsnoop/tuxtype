@@ -28,7 +28,7 @@ function tick()
     //deltatime is in ms (integer)
     deltaTime = now - lastFrameTime;
     lastFrameTime = now;
-    if (getTimer) {
+    if (getTimer!=true) {
         now = new Date();
         updateWPM(now);
         updateCPM(now);

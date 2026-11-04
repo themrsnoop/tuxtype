@@ -1,6 +1,6 @@
 /* I know the standard is to organize navbars in <ul><li><li>...etc. but <divs> are just so much easier to work with in my opinion. */
 
-.Navbar
+#Navbar
 {
     width: 100vw;
     position: absolute;
@@ -9,6 +9,11 @@
     display: flex;
     align-content: center;
     gap: 2.5ch;
+}
+
+button
+{
+    font-family: monospace;
 }
 
 .Nav
@@ -21,14 +26,14 @@
 /* extras */
 
 /* ensures first navbar element (the logo) has padding */
-.Navbar:first-child { padding-left: 5ch; }
+#Navbar:first-child { padding-left: 5ch; }
 
 /* likewise with the last */
-.Navbar:last-child { padding-right: 5ch; }
+#Navbar:last-child { padding-right: 5ch; }
 
 .Nav img { height: 100%; }
 
-.Navbar .line
+#Navbar .line
 {
     position: absolute;
     width: 100%;
@@ -38,7 +43,7 @@
     height: 1px;
 }
 
-.Navbar .vr 
+#Navbar .vr 
 {
     background-color: rgba(255, 235, 56, 0.75);
     width: 1px;
@@ -52,7 +57,7 @@
     margin-right: 2ch;
 }
 
-.selectedDistro
+#selectedDistro
 {
     height: 1px;
     width: 100%;

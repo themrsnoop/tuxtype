@@ -1,10 +1,11 @@
-import { randMand } from "./linux_gacha.js";
-import { give_meaning } from "./linux_meaning.js";
+import { randMand } from './linux_gacha.js';
+import { update_meaning } from './linux_meaning.js';
 import { updateCaretPosition } from './caret.js';
 import { Timer } from './timer.js';
 import { logCharacter, logCMDS, unLogCharacter } from './tick.js';
+import { get_current_data, update_data } from "./distro_selector.js";
+
 let keyContainer;
-//CHARACTER DEFINITIONS
 
 const char_state = {
     Incorrect: 'incorrect',
@@ -34,10 +35,7 @@ const current_char_array = {
 
 export const characters = current_char_array.charray;
 
-
-//CONTAINER RENDERING /---------------------------------------------------------------------------------------------------------------------------------------------------------------------------/
-
-//random helpers
+// random helpers
 function updateCharacterArray(c) {
     const newCharacterObject = { char: c, real: null, state: char_state.Pending };
     characters.push(newCharacterObject);
@@ -45,10 +43,10 @@ function updateCharacterArray(c) {
 }
 
 
-//ALSO updates the charArray bc the enum was never actually being updated from .Pending!
+// ALSO updates the charArray bc the enum was never actually being updated from .Pending!
 function updateSpanClass(span, classString)
 {
-    //spanStuff
+    // spanStuff
     span.className = "";
     span.classList.add(classString);
 }
@@ -72,29 +70,17 @@ function updateCharacterState(index, enumString)
     }
 }
 
-function update_meaning(text)
-{
-    let meaningBox = document.getElementById("Meaning");
-    let stack = give_meaning(data, text)
-    let output = "";
-    for (let i = 0; i<stack.length; i++){
-        output += stack[i].label + ": " + stack[i].text + "\n"
-    }
-
-    meaningBox.innerHTML = output
-}
-
 function isValidIndex(array, i) { return (i >= 0 && i < array.length); }
 
-//permanent function that randomly fills the character array on page reload.
+// permanent function that randomly fills the character array on page reload.
 function generateText()
 {
-    let string_text = randMand(data); //returns string
+    let string_text = randMand(get_current_data()); // returns string
     characters.length = 0;
     for (const letter of string_text) {
         updateCharacterArray(letter);
     }
-    //adds a space per word
+    // adds a space per word
     update_meaning(string_text)
     updateCharacterArray(" ");
     renderContainer();
@@ -114,14 +100,14 @@ function renderContainer()
     });
 }
 
-//INPUT
+// INPUT
 let currentCharacterIndex = 0;
 
 let currentCharacter;
 
 function updateCharacterIndex(modifier)
 {
-    //sets index no less than 0;
+    // sets index no less than 0;
     currentCharacterIndex = Math.max((currentCharacterIndex + modifier), 0);
 }
 
@@ -132,8 +118,8 @@ function new_line(){
     logCMDS();
 }
 
-//there is only one bool and its stored here. therefore, it must also be set here by timer.js
-let runningTimer;
+// there is only one bool and its stored here. therefore, it must also be set here by timer.js
+let runningTimer = false;
 export function resetTimer() { runningTimer = false };
 export function getTimer() { return runningTimer; };
 
@@ -142,7 +128,7 @@ function initialize()
     Timer();
     runningTimer = true;
 
-    //removes blinking on typing start
+    // removes blinking on typing start
     const caret = document.getElementById("caret");
     const caret_ghost = document.getElementById("caret_ghost");
     caret.className = "";
@@ -154,7 +140,7 @@ let currentKey = "";
 
 function keyInput(event)
 {
-    //basically a general do once check now
+    // basically a general do once check now
     if (!runningTimer)
     {
         initialize();
@@ -207,10 +193,11 @@ function keyInput(event)
 }
 
 
-function load()
+export function load()
 {
     generateText();
-    updateCaretPosition(currentCharacterIndex); //place caret on the first character
+    updateCaretPosition(currentCharacterIndex); // place caret on the first character
+    update_data();
 
     window.addEventListener("keydown", keyInput);
     window.addEventListener("keyup", function(){
@@ -220,5 +207,5 @@ function load()
 
 load();
 
-//updates caret position on window resize
+// updates caret position on window resize
 window.addEventListener('resize', updateCaretPosition);

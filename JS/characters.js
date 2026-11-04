@@ -2,6 +2,7 @@ import { randMand } from "./linux_gacha.js";
 import { give_meaning } from "./linux_meaning.js";
 import { updateCaretPosition } from './caret.js';
 import { Timer } from './timer.js';
+import { logCharacter, logCMDS, unLogCharacter } from './tick.js';
 const data = await (await fetch("linux_commands.json")).json();
 let keyContainer;
 //CHARACTER DEFINITIONS
@@ -32,7 +33,7 @@ const current_char_array = {
     let_up: null
 }
 
-const characters = current_char_array.charray;
+export const characters = current_char_array.charray;
 
 
 //CONTAINER RENDERING /---------------------------------------------------------------------------------------------------------------------------------------------------------------------------/
@@ -70,60 +71,6 @@ function updateCharacterState(index, enumString)
         default:
             break;
     }
-}
-
-//used in tick() to find wpm
-let archivedCorrect = 0;
-
-function archiveWordCount() { archivedCorrect += returnCorrectWordCount() - 1; }
-
-//used in tick to ensure word count is carried over on text regeneration
-export function returnArchivedWordCount() { return archivedCorrect; }
-
-//iterates through every collection of characters (defined below) and tallies up the ones that are COMPLETELY correct
-export function returnCorrectWordCount()
-{
-    let correctWords = 0;
-
-    //you know damn well I didnt write this monstrosity, it just treats the string something like this
-    //"file-system" = "file system"
-    //"file.txt" = "file txt"
-    //"/home/etc/sshd" = "home etc sshd"
-    //"nuclear_launch_code" = "nuclear launch code"
-    let plainText = characters.map(c => c.char).join("").replace(/(?<=\w)[-_](?=\w)|[\/~.]/g, " ");
-    
-    const promptWords = plainText.split(" ");
-
-    //index is used to bridge both arrays together
-    let index = 0;
-    for (let w = 0; w < promptWords.length; w++)
-    {
-        let wordFullyCorrect = true;
-        for (let c = 0; c < promptWords[w].length; c++)
-        {
-            if (characters[index + c].state !== char_state.Correct) //this word was NOT fully correct
-            {
-                wordFullyCorrect = false;
-                break;
-            } 
-        }
-        if (wordFullyCorrect) { correctWords += 1; }
-        index += promptWords[w].length + 1; //+1 for space
-    }
-
-    return correctWords;
-}
-
-export function returnTotalWordCount()
-{
-    //plainText = all chars in "character" combined into a single string;
-    const plainText = characters.map(c => c.char).join("");
-
-    //words[] = plainText separated by spaces 
-    const words = plainText.split(" ");
-
-    //it would persistently be 1+ otherwise so im just lazily subtracting one.
-    return words.length - 1;
 }
 
 function update_meaning(text)
@@ -169,7 +116,6 @@ function renderContainer()
 }
 
 //INPUT
-let currentKey = "";
 let currentCharacterIndex = 0;
 
 let currentCharacter;
@@ -181,18 +127,15 @@ function updateCharacterIndex(modifier)
 }
 
 function new_line(){
-    archiveWordCount()
     generateText();
     updateCharacterIndex(-Number.MAX_SAFE_INTEGER);
     updateCaretPosition(currentCharacterIndex);
-
+    logCMDS();
 }
 
 //there is only one bool and its stored here. therefore, it must also be set here by timer.js
 let runningTimer;
 export function resetTimer() { runningTimer = false };
-
-import { beginTrackingWPM } from './tick.js';
 
 function initialize()
 {
@@ -205,8 +148,9 @@ function initialize()
     caret.className = "";
     caret_ghost.className = "";
 
-    beginTrackingWPM();
 }
+
+let currentKey = "";
 
 function keyInput(event)
 {
@@ -223,6 +167,9 @@ function keyInput(event)
     if (keyname == "ArrowLeft" || keyname == "Backspace")
     {
         updateCharacterIndex(-1);
+        if (characters[currentCharacterIndex].state === 'correct') {
+            unLogCharacter();
+        }
         currentCharacter = keyContainer.children[currentCharacterIndex];
         updateSpanClass(currentCharacter, "pending");
         updateCharacterState(currentCharacterIndex, "pending");
@@ -241,12 +188,13 @@ function keyInput(event)
 
     currentCharacter = keyContainer.children[currentCharacterIndex];
 
-    let correctCharacter = characters[currentCharacterIndex].char.toLowerCase();
+    let correctCharacter = characters[currentCharacterIndex].char;
 
-    if (correctCharacter == keyname.toLowerCase())
+    if (correctCharacter == keyname)
     {
         updateSpanClass(currentCharacter, "correct");
         updateCharacterState(currentCharacterIndex, "correct");
+        logCharacter()
     }
     else 
     {

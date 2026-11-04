@@ -1,50 +1,76 @@
 import { caretTick } from './caret.js';
-import { returnCorrectWordCount } from './characters.js';
-import { returnArchivedWordCount } from './characters.js';
 import { lerpColor } from './math.js';
 
 //tick ticks
 let lastFrameTime;
-let deltaTime;
 let now;
+let deltaTime;
+
+const wpmText = document.getElementById("wpm");
+const cmdText = document.getElementById("cmds")
+const cpmText = document.getElementById("cpm")
+
+
+let startTime = new Date();
+
+let char_log = 0;
+export function logCharacter() {char_log++;}
+export function unLogCharacter() {char_log--;}
+
+let cmds = 0;
+export function logCMDS() {cmds++;}
+
 function tick()
 {
     now = new Date();
+
     //deltatime is in ms (integer)
     deltaTime = now - lastFrameTime;
     lastFrameTime = now;
+
+    updateWPM(now);
+    updateCPM(now);
+    updateCMDS();
 
     caretTick();
     requestAnimationFrame(tick);
 }
 tick();
 
-
-
-let startTime = 0;
-export function beginTrackingWPM() {startTime = new Date(); updateWPM()}
-
-const wpmText = document.getElementById("wpm");
-const cmdsTxt = document.getElementById("words");
-const wpmTime = 0.5;
-//updates every 0.5s
-function updateWPM()
+function getWPM(cur)
 {
-    let words = returnCorrectWordCount() + (returnArchivedWordCount() - 0);
-    let elapsedTime = Math.max(1000, now - startTime);
-    //this gives words per second
-    let wps = words / (elapsedTime / 1000);
-    let wpm = 60 * wps;
+    let wpm = getCPM(cur)/5 //no need for allat bro..... this is how u do it. source: https://en.wikipedia.org/wiki/Words_per_minute
+    return wpm
+}
 
+function getCPM(cur){
+    let elapsedTime = Math.max(1000, cur - startTime);
+    let cpm = char_log / (elapsedTime / 60000);
+    return cpm
+}
+
+function updateWPM(cur){
+    let wpm = getWPM(cur)
     wpmText.innerHTML = `wpm: ${Math.round(wpm)}`;
-    cmdsTxt.innerHTML = `cmds: ${Math.round(words)} |`;
 
     //updates color
 
     if (wpm < 40) { wpmText.style.color = "rgb(255, 100, 100)"; }
     else if (wpm > 80) { wpmText.style.color = "rgb(100, 255, 113)"; }
     else wpmText.style.color = lerpColor(255, 162, 100, 170, 255, 100, ((wpm - 40) / 40));
+}
 
-    //loops
-    setTimeout(() => {updateWPM();}, wpmTime * 1000.0);
+function updateCPM(cur){
+    let cpm = getCPM(cur)
+    cpmText.innerHTML = `cpm: ${Math.round(cpm)}`;
+
+    //updates color
+
+    if (cpm < 40*5.36) { cpmText.style.color = "rgb(255, 100, 100)"; }
+    else if (cpm > 80*5.36) { cpmText.style.color = "rgb(100, 255, 113)"; }
+    else cpmText.style.color = lerpColor(255, 162, 100, 170, 255, 100, ((cpm - 40*5.36) / 40*5.36));
+}
+
+function updateCMDS(){
+    cmdText.innerHTML = `cmds: ${cmds}`; //pulled from newline in characters
 }

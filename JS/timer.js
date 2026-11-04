@@ -24,7 +24,7 @@ export function Timer()
     let userFriendlyMS = String(simplifiedMiliseconds).padStart(2, '0');
 
     const clock = document.getElementById("Clock");
-    clock.innerHTML = `${userFriendlySeconds}:${userFriendlyMS} | `;
+    clock.innerHTML = `${userFriendlySeconds}:${userFriendlyMS}`;
 
     setTimeout(() => {
         Timer();

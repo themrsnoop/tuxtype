@@ -3,7 +3,6 @@ import { give_meaning } from "./linux_meaning.js";
 import { updateCaretPosition } from './caret.js';
 import { Timer } from './timer.js';
 import { logCharacter, logCMDS, unLogCharacter } from './tick.js';
-const data = await (await fetch("linux_commands.json")).json();
 let keyContainer;
 //CHARACTER DEFINITIONS
 
@@ -136,6 +135,7 @@ function new_line(){
 //there is only one bool and its stored here. therefore, it must also be set here by timer.js
 let runningTimer;
 export function resetTimer() { runningTimer = false };
+export function getTimer() { return runningTimer; };
 
 function initialize()
 {

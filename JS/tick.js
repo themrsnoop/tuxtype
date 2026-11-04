@@ -1,5 +1,6 @@
 import { caretTick } from './caret.js';
 import { lerpColor } from './math.js';
+import { getTimer } from './characters.js';
 
 //tick ticks
 let lastFrameTime;
@@ -27,10 +28,12 @@ function tick()
     //deltatime is in ms (integer)
     deltaTime = now - lastFrameTime;
     lastFrameTime = now;
-
-    updateWPM(now);
-    updateCPM(now);
-    updateCMDS();
+    if (getTimer) {
+        now = new Date();
+        updateWPM(now);
+        updateCPM(now);
+        updateCMDS();
+    }
 
     caretTick();
     requestAnimationFrame(tick);

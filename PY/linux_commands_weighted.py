@@ -1,0 +1,84 @@
+import argparse,json,os,re,glob,shutil,subprocess
+def T(d):
+ r={}
+ for k,v in d.items():
+  for n in v.split():r[n]=max(r.get(n,0),k)
+ return r
+def M(*ds):
+ r={}
+ for d in ds:
+  for n,v in d.items():r[n]=max(r.get(n,0),v)
+ return r
+def KV(s):return{k:int(v)for k,v in(x.split(":")for x in s.split())}
+G=M(T({100:'ls cd cat grep git echo sudo cp mv rm mkdir ssh vim python3 pwd',80:'find ps curl wget tar less head tail touch chmod chown sed awk ping docker make apt apt-get export source clear history which man nano kill top df du sort uniq wc cut systemctl pip pip3 npm node ln diff date env',60:'xargs tee tr whoami id uname journalctl scp rsync unzip gzip gunzip zip bash sh grep egrep fgrep ip ss netstat mount umount lsblk free uptime service crontab alias unalias type test read printf dpkg yum dnf pacman snap kubectl helm gcc g++ gdb cargo go ruby java jq tmux screen htop watch basename dirname realpath stat file readlink nohup bg fg jobs sleep true false exit exec set unset',40:'dd fdisk parted mkfs fsck lsof strace ltrace nc nmap dig nslookup host traceroute iptables ufw useradd userdel usermod passwd groupadd su chgrp umask hostname hostnamectl timedatectl lscpu lsusb lspci dmesg sysctl modprobe lsmod insmod rmmod uname base64 md5sum sha256sum sha1sum split join paste comm column fold expand fmt nl od hexdump xxd strings time timeout locate updatedb whereis apropos info help bc expr seq shuf yes tac rev openssl gpg ssh-keygen ssh-copy-id sftp nginx apache2 psql mysql sqlite3 redis-cli pkill killall pgrep nice renice ionice reboot shutdown poweroff halt declare local return shift trap wait eval command builtin pushd popd dirs let getopts',25:'chattr lsattr setfacl getfacl getcap setcap visudo vipw chpasswd chsh chfn who w last lastlog ifconfig route arp ethtool iwconfig nmcli resolvectl tcpdump iftop iotop vmstat iostat mpstat sar pidstat nproc lsns unshare nsenter chroot ldd ldconfig objdump nm readelf ar ld as patch git-lfs svn hg rsync lftp ftp telnet mtr whois curl-config lvm pvs vgs lvs lvcreate mdadm blkid findmnt swapon swapoff mkswap tune2fs e2fsck resize2fs at batch anacron logger logrotate rsyslogd syslogd cron xz bzip2 zcat bzcat xzcat zstd 7z rar cpio ar iconv locale localectl loadkeys setfont stty tty reset tput mktemp install shred truncate fallocate sync mknod mkfifo ',8:'arch factor pinky users uptime logname nohup printenv groups dircolors tsort pr ptx csplit unexpand sum cksum b2sum sha224sum sha384sum sha512sum link unlink runcon chcon stdbuf pathchk tty numfmt cmp sdiff diff3 look rename taskset chrt flock ipcs ipcrm ipcmk wall write mesg mcookie hwclock rtcwake fstrim blkdiscard wipefs partx losetup'}),T({80:"uname",60:"dmesg lsmod modprobe tree zsh ssh-add rg fd lsblk",40:"insmod rmmod modinfo depmod lspci lsusb lscpu lshw dmidecode hwinfo smartctl hdparm nvme sensors podman",25:"kmod kexec perf bpftool dracut mkinitcpio update-initramfs genkernel grub-mkconfig grub2-mkconfig update-grub kernel-install bootctl efibootmgr ldconfig mokutil sbctl lsinitrd lsinitramfs lsinitcpio trace-cmd crash makedumpfile systemd-analyze machinectl loginctl networkctl resolvectl systemd-cgls systemd-run systemd-nspawn busctl coredumpctl udevadm lsns cgcreate cgexec mdadm cryptsetup timedatectl hostnamectl localectl"}))
+DT={"debian":T({100:"apt",80:"apt-get dpkg",60:"apt-cache apt-mark aptitude dpkg-reconfigure update-alternatives add-apt-repository dpkg-query update-grub update-initramfs",40:"apt-file apt-key debconf-show dpkg-deb dpkg-divert debootstrap needrestart unattended-upgrade update-rc.d adduser deluser addgroup delgroup",25:"dpkg-buildpackage dh_make lintian apt-listchanges apt-config apt-ftparchive deborphan checkinstall"}),"fedora":T({100:"dnf",80:"rpm",60:"yum flatpak firewall-cmd grubby dracut rpm-ostree getenforce setenforce sestatus restorecon semanage",40:"dnf5 rpmbuild rpmdev-setuptree createrepo_c koji copr-cli mock fedpkg subscription-manager authselect alternatives grub2-mkconfig grub2-install kernel-install setsebool getsebool chcon ausearch audit2allow audit2why toolbox podman",25:"rpm2cpio rpmquery rpmverify buildah skopeo rpmlint rpmsign"}),"arch":T({100:"pacman",80:"yay paru makepkg",60:"mkinitcpio pacstrap arch-chroot genfstab reflector pacman-key paccache pacdiff",40:"pactree checkupdates updpkgsums namcap asp pkgctl devtools makechrootpkg grub-mkconfig grub-install bootctl aur-sync",25:"rankmirrors pacman-conf expac pkgfile pacgraph vercmp repo-add repo-remove"}),"nix":T({100:"nix nixos-rebuild",80:"nix-env nix-shell nix-build nix-collect-garbage",60:"nix-store nix-channel nixos-install nixos-generate-config nix-instantiate",40:"nix-prefetch-url nix-copy-closure nix-index nix-locate nixos-option nixos-version nixos-container nix-diff nix-tree nom nixfmt nixpkgs-fmt nix-prefetch-git statix deadnix home-manager direnv",25:"nix-daemon nix-hash nix-bundle nix-du nurl nvd cachix devenv nixd nil"}),"gentoo":T({100:"emerge",80:"eselect equery emaint",60:"etc-update dispatch-conf revdep-rebuild portageq ebuild euse rc-update rc-service rc-status eix genlop",40:"eix-sync genkernel env-update eclean eclean-dist eclean-kernel eix-update layman equo emerge-webrsync ufed cpuid2cpuflags openrc flaggie glsa-check quickpkg regenworld",25:"repoman pkgdev pkgcheck pmerge pquery qlist qfile qdepends qlop qgrep emirrordist smart-live-rebuild"})}
+for n in("apt","apt-get","dpkg","yum","dnf","pacman"):G.pop(n,None)
+ST=M(T({100:'read write openat close mmap munmap brk fstat newfstatat',60:'open stat lstat lseek ioctl access execve exit_group clone fork vfork wait4 getpid gettid futex poll epoll_wait epoll_ctl epoll_create1 select pipe pipe2 dup dup2 dup3 socket connect accept accept4 bind listen sendto recvfrom sendmsg recvmsg setsockopt getsockopt rt_sigaction rt_sigprocmask rt_sigreturn clock_gettime nanosleep getdents64 readlink mprotect pread64 pwrite64 readv writev fcntl getcwd chdir uname prctl arch_prctl',25:'mkdir rmdir unlink rename link symlink chmod chown fchmod fchown utimensat truncate ftruncate fsync fdatasync kill tgkill setuid setgid getuid getgid geteuid getegid madvise mremap statfs fstatfs sysinfo getrlimit setrlimit prlimit64 getrandom eventfd2 timerfd_create inotify_init1 inotify_add_watch set_tid_address set_robust_list sched_yield sched_getaffinity'}),T({40:"mount umount2 chroot unshare setns ptrace prctl seccomp bpf mkdirat unlinkat renameat renameat2 faccessat readlinkat statx sendfile splice copy_file_range",25:"perf_event_open io_uring_setup io_uring_enter io_uring_register memfd_create userfaultfd pidfd_open pidfd_send_signal pidfd_getfd openat2 clone3 close_range landlock_create_ruleset landlock_add_rule landlock_restrict_self pivot_root reboot kexec_load kexec_file_load init_module finit_module delete_module syslog sysfs swapon swapoff mlock mlock2 munlock mlockall msync mincore madvise sched_setscheduler sched_setparam sched_getparam sched_setaffinity nanosleep clock_nanosleep clock_getres timer_create timer_settime timer_delete timerfd_create timerfd_settime timerfd_gettime signalfd4 epoll_pwait epoll_pwait2 ppoll pselect6 sendmmsg recvmmsg socketpair shutdown getpeername getsockname mknod mknodat fchownat lchown sync syncfs fadvise64 fallocate readahead flock inotify_init inotify_rm_watch fanotify_init fanotify_mark name_to_handle_at open_by_handle_at quotactl setxattr getxattr listxattr removexattr lsetxattr lgetxattr fsetxattr fgetxattr ioperm iopl modify_ldt personality capget capset acct adjtimex clock_adjtime settimeofday gettimeofday times uname sethostname setdomainname"}))
+NS="futex_waitv set_mempolicy_home_node cachestat fchmodat2 map_shadow_stack futex_wake futex_wait futex_requeue statmount listmount lsm_get_self_attr lsm_set_self_attr lsm_list_modules mseal setxattrat getxattrat listxattrat removexattrat open_tree_attr file_getattr file_setattr quotactl_fd landlock_create_ruleset landlock_add_rule landlock_restrict_self memfd_secret process_mrelease epoll_pwait2 mount_setattr pidfd_open pidfd_getfd pidfd_send_signal process_madvise faccessat2 openat2 close_range clone3 io_uring_setup io_uring_enter io_uring_register fsopen fsconfig fsmount fspick move_mount open_tree rseq pkey_alloc pkey_free pkey_mprotect statx io_pgetevents preadv2 pwritev2 copy_file_range membarrier mlock2 userfaultfd kexec_file_load bpf execveat"
+BB={'set','wait','trap','source','export','history','kill','type','unset','shift','cd','test','pwd','jobs','bg','exit','echo','return','alias','fg','printf','read'}
+KS=KV("vm.swappiness:80 vm.dirty_ratio:40 vm.dirty_background_ratio:40 vm.overcommit_memory:40 vm.max_map_count:50 vm.drop_caches:60 vm.vfs_cache_pressure:35 vm.min_free_kbytes:25 vm.nr_hugepages:30 vm.panic_on_oom:15 vm.oom_kill_allocating_task:10 vm.zone_reclaim_mode:10 vm.page-cluster:10 vm.overcommit_ratio:25 vm.mmap_min_addr:15 vm.compact_memory:10 vm.watermark_scale_factor:10 vm.dirty_expire_centisecs:15 vm.dirty_writeback_centisecs:15 kernel.hostname:50 kernel.pid_max:40 kernel.panic:30 kernel.panic_on_oops:20 kernel.sysrq:60 kernel.randomize_va_space:60 kernel.printk:40 kernel.dmesg_restrict:40 kernel.kptr_restrict:50 kernel.core_pattern:50 kernel.core_uses_pid:10 kernel.shmmax:30 kernel.shmall:25 kernel.shmmni:10 kernel.sem:20 kernel.msgmax:10 kernel.msgmnb:10 kernel.threads-max:25 kernel.unprivileged_userns_clone:30 kernel.unprivileged_bpf_disabled:30 kernel.perf_event_paranoid:40 kernel.yama.ptrace_scope:40 kernel.modules_disabled:20 kernel.nmi_watchdog:25 kernel.watchdog:10 kernel.softlockup_panic:10 kernel.hung_task_timeout_secs:15 kernel.sched_autogroup_enabled:20 kernel.numa_balancing:15 kernel.osrelease:25 kernel.ostype:10 kernel.version:15 kernel.domainname:10 kernel.ngroups_max:5 kernel.random.entropy_avail:20 kernel.random.boot_id:10 kernel.tainted:25 kernel.ctrl-alt-del:10 kernel.cad_pid:5 kernel.pty.max:10 kernel.keys.maxkeys:5 kernel.kexec_load_disabled:15 kernel.sched_rt_runtime_us:15 kernel.sched_child_runs_first:5 kernel.sched_migration_cost_ns:10 net.ipv4.ip_forward:100 net.ipv6.conf.all.forwarding:50 net.ipv4.tcp_syncookies:50 net.ipv4.tcp_fin_timeout:30 net.ipv4.tcp_tw_reuse:30 net.ipv4.tcp_keepalive_time:30 net.ipv4.tcp_keepalive_intvl:10 net.ipv4.tcp_keepalive_probes:10 net.ipv4.tcp_max_syn_backlog:30 net.ipv4.tcp_congestion_control:40 net.ipv4.tcp_rmem:30 net.ipv4.tcp_wmem:30 net.ipv4.tcp_window_scaling:15 net.ipv4.tcp_sack:10 net.ipv4.tcp_timestamps:10 net.ipv4.tcp_fastopen:25 net.ipv4.tcp_mtu_probing:15 net.ipv4.tcp_slow_start_after_idle:10 net.ipv4.tcp_max_tw_buckets:15 net.ipv4.ip_local_port_range:40 net.ipv4.ip_nonlocal_bind:20 net.ipv4.icmp_echo_ignore_all:20 net.ipv4.icmp_echo_ignore_broadcasts:15 net.ipv4.conf.all.rp_filter:40 net.ipv4.conf.default.rp_filter:25 net.ipv4.conf.all.accept_redirects:25 net.ipv4.conf.all.send_redirects:25 net.ipv4.conf.all.accept_source_route:15 net.ipv4.conf.all.log_martians:15 net.core.somaxconn:50 net.core.netdev_max_backlog:30 net.core.rmem_max:35 net.core.wmem_max:35 net.core.rmem_default:15 net.core.wmem_default:15 net.core.default_qdisc:30 net.core.optmem_max:10 net.bridge.bridge-nf-call-iptables:35 net.bridge.bridge-nf-call-ip6tables:25 net.netfilter.nf_conntrack_max:35 net.nf_conntrack_max:20 net.ipv6.conf.all.disable_ipv6:40 net.ipv6.conf.default.disable_ipv6:25 net.ipv6.conf.all.accept_ra:15 fs.file-max:60 fs.nr_open:20 fs.inotify.max_user_watches:55 fs.inotify.max_user_instances:30 fs.inotify.max_queued_events:10 fs.aio-max-nr:20 fs.suid_dumpable:20 fs.protected_hardlinks:20 fs.protected_symlinks:20 fs.protected_fifos:5 fs.protected_regular:5 fs.pipe-max-size:10 fs.mqueue.msg_max:5 fs.epoll.max_user_watches:10 dev.tty.ldisc_autoload:5 user.max_user_namespaces:30 user.max_pid_namespaces:5 abi.vsyscall32:5 debug.exception-trace:5 crypto.fips_enabled:10")
+MM=KV("ext4:70 btrfs:60 xfs:50 vfat:50 nvme:60 e1000e:30 igb:20 iwlwifi:40 ath9k:15 r8169:35 i915:60 amdgpu:60 nouveau:40 nvidia:70 nvidia_drm:30 nvidia_modeset:30 nvidia_uvm:30 kvm:60 kvm_intel:50 kvm_amd:50 vhost_net:15 vboxdrv:25 loop:50 overlay:50 br_netfilter:40 veth:30 bridge:30 tun:40 tap:10 vfio:15 vfio_pci:25 vfio_iommu_type1:15 snd_hda_intel:35 snd_usb_audio:15 usbhid:20 usb_storage:35 uas:10 xhci_hcd:25 ehci_hcd:10 btusb:30 bluetooth:30 cfg80211:20 mac80211:20 wireguard:40 nf_tables:35 nf_conntrack:30 nft_chain_nat:10 ip_tables:30 iptable_nat:15 ip6_tables:15 xt_conntrack:10 xt_MASQUERADE:15 tcp_bbr:30 sch_fq:15 sch_cake:10 zfs:40 fuse:35 squashfs:25 isofs:15 udf:10 ntfs3:20 exfat:20 nfs:25 nfsd:20 cifs:20 dm_mod:30 dm_crypt:35 dm_snapshot:10 raid1:15 raid0:5 raid456:10 md_mod:15 zram:30 zswap:5 binfmt_misc:20 uvcvideo:25 videodev:10 joydev:10 psmouse:10 hid_generic:15 thunderbolt:15 coretemp:15 k10temp:15 msr:15 cpuid:5 hwmon:5 ahci:35 libata:10 sd_mod:20 sr_mod:10 virtio_net:35 virtio_blk:30 virtio_pci:20 virtio_balloon:5 vmxnet3:10 hv_vmbus:10 floppy:5 parport:5 lp:5 ppdev:5 tpm:10 tpm_tis:10 usbcore:20 snd:20 drm:30 drm_kms_helper:10 fbcon:5 vga16fb:5 efivarfs:10 efivars:5 ipv6:20 af_packet:10 ip_vs:10 sctp:5 dccp:3 tipc:3 rds:3 nbd:10 bonding:15 8021q:15 macvlan:10 vxlan:10 geneve:5 gre:5 ipip:5 dummy:10 ifb:5")
+ap=argparse.ArgumentParser()
+for k,v in(("--out","b.json"),("--distro","auto")):ap.add_argument(k,default=v)
+ap.add_argument("--history",nargs="*",default=[])
+ap.add_argument("--history-share",type=float,default=.6)
+ap.add_argument("--installed-only",action="store_true")
+a=ap.parse_args()
+def sh(c):
+ try:return subprocess.run(["bash","-c",c],capture_output=True,text=True,timeout=20,stdin=subprocess.DEVNULL).stdout
+ except Exception:return ""
+def L(c):return sorted({l.strip()for l in sh(c).splitlines()if l.strip()})
+def dd():
+ try:i=open("/etc/os-release").read()
+ except OSError:return["debian"]
+ s=" ".join(re.findall(r'^ID(?:_LIKE)?="?([^"\n]+)',i,re.M)).split()
+ for k,v in(("arch","arch"),("fedora","fedora"),("rhel","fedora"),("debian","debian"),("ubuntu","debian"),("nixos","nix"),("gentoo","gentoo")):
+  if k in s:return[v]
+ return["debian"]
+ds=list(DT)if a.distro=="all" else dd()if a.distro=="auto" else[a.distro]
+P=M(G,*[DT[d]for d in ds])
+def hc(fs):
+ c={}
+ for f in fs:
+  try:
+   for l in open(os.path.expanduser(f),errors="ignore"):
+    l=re.sub(r"^: \d+:\d+;","",l.strip())
+    for s in re.split(r"\||&&|\|\||;",l):
+     t=s.split()
+     while t and(re.match(r"^\w+=",t[0])or t[0]in("sudo","time","nohup","env")):
+      if t[0]=="sudo":c["sudo"]=c.get("sudo",0)+1
+      t=t[1:]
+     if t:n=os.path.basename(t[0]);c[n]=c.get(n,0)+1
+  except OSError:pass
+ return c
+h=hc(a.history);hm=max(h.values())if h else 0
+def B(n,b):return float(b)if not hm else(1-a.history_share)*b+a.history_share*100.*h.get(n,0)/hm
+SD=("/usr/bin","/bin","/usr/sbin","/sbin","/usr/local/bin","/usr/local/sbin","/snap/bin","/nix/","/run/current-system","/run/wrappers","/etc/profiles")
+NZ=re.compile(r"(linux-gnu|^_|\.(pl|py|sh)$|-\d+(\.\d+)*$|\d+\.\d+|^python3?-|^perl\d|^c\+\+-|^gcc-|^g\+\+-|^cpp-|^x86_64|^i686|^aarch64|^pod2|^dh_|^dpkg-|^update-|^lib)")
+def ok(n):
+ if n in P:return 1
+ if NZ.search(n):return 0
+ p=shutil.which(n);return bool(p)and p.startswith(SD)
+bn=L("compgen -b");kw=set(L("compgen -k"))
+ex=set(c for c in L("compgen -c")if ok(c))-set(bn)-kw
+if not a.installed_only:ex|=set(P)-set(bn)-kw
+def sc():
+ s=set()
+ for p in glob.glob("/usr/include/**/unistd_64.h",recursive=True)+glob.glob("/usr/include/asm-generic/unistd.h")+glob.glob("/nix/store/*/include/asm*/unistd_64.h")+glob.glob("/usr/src/linux*/arch/x86/include/generated/uapi/asm/unistd_64.h"):
+  try:s|=set(re.findall(r"#\s*define\s+__NR(?:3264)?_(\w+)",open(p,errors="ignore").read()))
+  except OSError:pass
+ s|=set(L("ausyscall --dump 2>/dev/null | awk 'NR>1{print $2}'"))|set(NS.split())
+ return sorted(x for x in s if re.match(r"^[a-z]",x)and not re.match(r"^(syscalls|arch_specific_syscall|syscall_max|ni_syscall|x32_.*|reserved.*|unused.*)$",x))
+def sy():
+ s=set(L("sysctl -aN 2>/dev/null"))
+ for r,_,fs in os.walk("/proc/sys"):
+  for f in fs:s.add(os.path.join(r,f)[10:].replace("/","."))
+ s|=set(KS)
+ return sorted(k for k in s if not re.match(r"^net\.(ipv[46])\.(conf|neigh)\.(?!all\.|default\.)",k))
+def md():
+ s=set(L("lsmod 2>/dev/null | tail -n +2 | cut -d' ' -f1"))
+ for f in(glob.glob("/lib/modules/*/**/*.ko*",recursive=True)+glob.glob("/run/booted-system/kernel-modules/lib/modules/*/**/*.ko*",recursive=True))[:30000]:s.add(re.sub(r"\.ko(\.\w+)?$","",os.path.basename(f)).replace("-","_"))
+ return sorted(s|set(MM))
+def S(ns,m,d=1):return dict(sorted(((n,int(m.get(n,d)))for n in ns),key=lambda t:-t[1]))
+def C(ns,w):return{n:{"weight":int(round(B(n,w(n))))}for n in sorted(ns,key=lambda n:-w(n))}
+json.dump({"meta":{"distro":ds},"builtins":C(bn,lambda n:max(P.get(n,1),60)if n in BB else P.get(n,1)),"commands":C(ex,lambda n:P.get(n,1)),"syscalls":S(sc(),ST),"sysctl":S(sy(),KS),"modules":S(md(),MM)},open(a.out,"w"),separators=(",",":"))

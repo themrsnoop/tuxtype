@@ -2,13 +2,14 @@ import { resetTimer } from './characters.js';
 import { updateWPMLog } from './tick.js';
 import { buildEndgame } from './endgame.js';
 const completionContainer = document.getElementById("completionContainer");
+const timerWheel = document.getElementById("timeOptionsContainer");
 
 
-const maxTime = 15; //in sec
+const maxTime = 45; //in sec
 let currentMiliseconds = maxTime * 1000;
 export function Timer()
 {
-    if (currentMiliseconds <= 0) 
+    if (currentMiliseconds <= 0)
     {
         resetTimer();
         //stops logging WPM
@@ -37,3 +38,8 @@ export function Timer()
         Timer();
     }, 10);
 }
+
+
+timerWheel.addEventListener("scroll", function (event) {
+  console.log(`${event}`)
+});

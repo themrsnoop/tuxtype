@@ -10,6 +10,7 @@ body, html
     color: white;
 
     --font-size: 4ch;
+    overflow-x: clip;
 }
 
 button
@@ -112,8 +113,45 @@ button
     width: 25vw;
     display: flex;
     font-size: 2.5ch;
-    
+
     gap: 2ch;
+}
+
+
+#timeOptionsContainer
+{
+    position: absolute;
+    gap: 0;
+
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1ch;
+
+    top: 50%;
+    left: 0;
+    width: 5ch;
+
+    transform: translate(0, -50%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 50%, transparent 75%);
+}
+
+#Clock
+{
+    opacity: 0;
+}
+
+#timeOptionsContainer button
+{
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    color: white;
+}
+
+#timeOptionsContainer button p
+{
+    font-size: 2ch;
+    padding: 0; margin: 0;
 }
 
 

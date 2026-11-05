@@ -1,0 +1,107 @@
+#completionContainer
+{
+    visibility: hidden;
+    width: 90vw;
+    height: 90vh;
+    background-color: #101010;
+    backdrop-filter: blur(8px);
+    border: 1px rgba(255, 255, 255, 0.125) solid;
+    position: fixed;
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+}
+
+.completionContent
+{
+    position: absolute;
+    width: 100%;
+    height: 35%;
+    border: 1px transparent solid;
+    display: flex;
+    align-items: center;
+    margin-top: 5%;
+    gap: 2.5%;
+    margin: 2.5%;
+}
+
+.graphContainer
+{
+    border: 1px rgba(125, 125, 125) solid;
+    border-radius: 8px;
+    width: 82.5%;
+    height: 100%;
+    position: relative;
+}
+
+#graph 
+{
+    width: 100%;
+    height: 100%;
+}
+
+.yAxis, .xAxis
+{
+    width: fit-content;
+    font-size: 18px;
+    background-color: #101010;
+    position: absolute;
+    font-weight: 400;
+    letter-spacing: 0.25ch;
+}
+
+.yAxis
+{
+    width: 1ch;
+    display: flex;
+    word-break: break-all;
+    padding: 1ch 0;
+    top: 50%;
+    left: -1ch;
+    transform: translate(0.5ch, -50%);
+}
+
+.xAxis
+{
+    bottom: -1ch;
+    left: 50%;
+    transform: translate(-50%, 1ch);
+    padding: 0 1ch;
+}
+
+.completionContent .stats
+{
+
+    width: 10%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 0;
+}
+
+#finalWPM
+{
+    text-align: center;
+    width: 100%;
+    font-size: 5ch;
+}
+
+.completionContent .stats .subStats
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1ch;
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 2ch;
+    flex-wrap: wrap;
+}
+
+#distroMode
+{
+    text-align: center;
+}

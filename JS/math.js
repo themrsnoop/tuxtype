@@ -9,3 +9,14 @@ export function lerpColor(aR, aG, aB, bR, bG, bB, A)
 
     return `rgb(${r}, ${g}, ${b})`;
 }
+
+//returns average of all numbers in an array
+export function findArrayAverage(arr)
+{
+    let sum = 0;
+    arr.forEach(num => {
+        sum += num;
+    });
+
+    return (sum / arr.length);
+}

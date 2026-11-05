@@ -7,8 +7,8 @@
 
     <!-- I suppose it'd be easier/cleaner to split styling across multiple css files -->
     <link rel="stylesheet" href="CSS/index.css">
-    <link rel="stylesheet" href="CSS/navbar.css"
-    >
+    <link rel="stylesheet" href="CSS/navbar.css">
+    <link rel="stylesheet" href="CSS/postgame.css">
     <link rel="icon" href="Recources/Branding/tuxascii.png">
 </head>
 <body>
@@ -28,8 +28,20 @@
 
     <div id="completionContainer">
         <div class="completionContent">
-            <img src="Recources/eesh.webp" alt="">
-            <h1>tuxtype totally is NOT currently breaking in the backgorund. chekc angai ltaer for wen we fiurged ou psot-gaem analyzsizz.</h1>
+            <div class="stats">
+                <h2 id="finalWPM">WPM=50</h2>
+                <div class="subStats">
+                    <h3 id="finalCPM">CPM:200</h3>
+                    <h3 id="finalCMD">CMDs:15</h3>
+                    <h4 id="distroMode">Distro-Mode=Arch</h4>
+                </div>
+
+            </div>
+            <div class="graphContainer">
+                <h1 class="yAxis">WPM</h1>
+                <h1 class="xAxis">TIME(S)</h1>
+                <canvas id="graph"></canvas>
+            </div>
         </div>
     </div>
 
@@ -56,5 +68,6 @@
     <script type = "module" src="JS/timer.js"></script>
     <script type="module" src="JS/tick.js"></script>
     <script type = "module" src="JS/characters.js"></script>
+    <script type="module" src="JS/endgame.js"></script>
 </body>
 </html>

@@ -2,7 +2,7 @@ import { randMand } from './linux_gacha.js';
 import { update_meaning } from './linux_meaning.js';
 import { updateCaretPosition } from './caret.js';
 import { Timer } from './timer.js';
-import { logCharacter, logCMDS, unLogCharacter } from './tick.js';
+import { logCharacter, logCMDS, unLogCharacter, updateWPMLog } from './tick.js';
 import { get_current_data, update_data } from "./distro_selector.js";
 
 let keyContainer;
@@ -39,7 +39,6 @@ export const characters = current_char_array.charray;
 function updateCharacterArray(c) {
     const newCharacterObject = { char: c, real: null, state: char_state.Pending };
     characters.push(newCharacterObject);
-    console.log(`adding ${c}`);
 }
 
 
@@ -95,7 +94,6 @@ function renderContainer()
         let newLetter = document.createElement('span');
         newLetter.innerHTML = character.char;
         updateSpanClass(newLetter, "pending")
-        console.log(`rendering: ${newLetter.innerHTML}`);
         keyContainer.appendChild(newLetter);
     });
 }
@@ -134,6 +132,8 @@ function initialize()
     caret.className = "";
     caret_ghost.className = "";
 
+    //begins logging WPM
+    updateWPMLog(false);
 }
 
 let currentKey = "";
@@ -147,7 +147,6 @@ function keyInput(event)
     }
 
     const keyname = event.key;
-    console.log(`${keyname} was pressed!`);
     currentKey = keyname;
 
     if (keyname == "ArrowLeft" || keyname == "Backspace")

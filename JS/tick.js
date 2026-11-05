@@ -11,7 +11,6 @@ const wpmText = document.getElementById("wpm");
 const cmdText = document.getElementById("cmds")
 const cpmText = document.getElementById("cpm")
 
-
 let startTime = new Date();
 
 let char_log = 0;
@@ -20,6 +19,12 @@ export function unLogCharacter() {char_log--;}
 
 let cmds = 0;
 export function logCMDS() {cmds++;}
+
+//used for the final graph! is updated on tick!
+let wpmLOG = [];
+
+export function retrieveWPMOverTime() { return wpmLOG; }
+export function retrieveCMDS() { return cmds; }
 
 function tick()
 {
@@ -40,24 +45,27 @@ function tick()
 }
 tick();
 
-function getWPM(cur)
-{
-    let wpm = getCPM(cur)/5 //no need for allat bro..... this is how u do it. source: https://en.wikipedia.org/wiki/Words_per_minute
-    return wpm
-}
 
-function getCPM(cur){
+function getCPM(cur)
+{
     let elapsedTime = Math.max(1000, cur - startTime);
     let cpm = char_log / (elapsedTime / 60000);
     return cpm
 }
+
+//used below also
+function getWPM(cur)
+{
+    let wpm = getCPM(cur)/5 //no need for allat bro..... this is how u do it. source: https://en.wikipedia.org/wiki/Words_per_minute |shhhhhhhhhhh
+    return wpm
+}
+
 
 function updateWPM(cur){
     let wpm = getWPM(cur)
     wpmText.innerHTML = `wpm: ${Math.round(wpm)}`;
 
     //updates color
-
     if (wpm < 40) { wpmText.style.color = "rgb(255, 100, 100)"; }
     else if (wpm > 80) { wpmText.style.color = "rgb(100, 255, 113)"; }
     else wpmText.style.color = lerpColor(255, 162, 100, 170, 255, 100, ((wpm - 40) / 40));
@@ -68,7 +76,6 @@ function updateCPM(cur){
     cpmText.innerHTML = `cpm: ${Math.round(cpm)}`;
 
     //updates color
-
     if (cpm < 40*5.36) { cpmText.style.color = "rgb(255, 100, 100)"; }
     else if (cpm > 80*5.36) { cpmText.style.color = "rgb(100, 255, 113)"; }
     else cpmText.style.color = lerpColor(255, 162, 100, 170, 255, 100, ((cpm - 40*5.36) / 40*5.36));
@@ -76,4 +83,13 @@ function updateCPM(cur){
 
 function updateCMDS(){
     cmdText.innerHTML = `cmds: ${cmds}`; //pulled from newline in characters
+}
+
+export function updateWPMLog(stopTimer)
+{
+    if (stopTimer) return;
+    wpmLOG.push(getWPM(now));
+
+    //runs every second
+    setTimeout(() => {updateWPMLog(false)}, 1000);
 }

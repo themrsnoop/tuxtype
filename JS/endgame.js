@@ -30,10 +30,23 @@ function returnWPM(t)
 
     //the question becomes, should we be LINEAR, quadratically, or cubicly interpolating?
     //idk try each one, see which one you like the best.
-    const interpolationDegree = 1;
+    const interpolationDegree = 1.5;
     return lerp(WPMs[floored], WPMs[ceiled], (Math.pow(alpha, interpolationDegree)));
 }
 
+function renderXAxisIntervals(totalT)
+{
+  const intervalContainer = document.getElementById("timeIntervals");
+  if (intervalContainer.hasChildNodes()) return; //stops func from being called more than once, idk why it is.
+  const intervalCount = 5; //(exluding 0)
+
+  for (let i = 0; i < intervalCount + 1; i++)
+  {
+    const newP = document.createElement("p");
+    newP.innerHTML = `${i * (totalT / intervalCount)}`;
+    intervalContainer.appendChild(newP);
+  }
+}
 
 const padding = 5;
 
@@ -43,7 +56,7 @@ function RenderGraph(totalTime)
 {
     const xPadding = X / padding;
     const yPadding = Y / range;
-    
+
     for (let x = 0; x < xPadding; x++)
     {
         //current time relative to the x-axis
@@ -61,6 +74,7 @@ function RenderGraph(totalTime)
 
 function renderAxisss()
 {
+
     const axisCount = 4;
     let spacing = Y / axisCount;
 
@@ -68,7 +82,7 @@ function renderAxisss()
     {
         //line
         ctx.beginPath();
-        ctx.strokeStyle = "rgb(64, 64, 64)"; 
+        ctx.strokeStyle = "rgb(64, 64, 64)";
         ctx.lineWidth = 1;
         ctx.moveTo(0, (y * spacing));
         ctx.lineTo(X, (y * spacing));
@@ -90,7 +104,7 @@ function renderAxisss()
 function renderLine()
 {
     ctx.beginPath();
-    ctx.strokeStyle = "rgba(255, 235, 56, 0.75)"; 
+    ctx.strokeStyle = "rgba(255, 235, 56, 0.75)";
     ctx.lineWidth = 2;
     for (let x = 0; x < X; x++)
     {
@@ -106,6 +120,8 @@ export function buildEndgame(totalTime)
     WPMs = retrieveWPMOverTime();
     RenderGraph(totalTime);
     renderAxisss();
+    renderXAxisIntervals(totalTime)
+
 
     //avg ofc
     const wpmText = document.getElementById("finalWPM");

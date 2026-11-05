@@ -4,7 +4,7 @@ import { buildEndgame } from './endgame.js';
 const completionContainer = document.getElementById("completionContainer");
 
 
-const maxTime = 5; //in sec
+const maxTime = 15; //in sec
 let currentMiliseconds = maxTime * 1000;
 export function Timer()
 {

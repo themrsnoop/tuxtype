@@ -105,7 +105,7 @@ button
 .immovableForce { color: white; }
 
 
-.ExtrasContainer
+#ExtrasContainer
 {
     bottom: 105%;
     left: 0;
@@ -130,14 +130,19 @@ button
     top: 50%;
     left: 0;
     width: 5ch;
+    max-height: 20ch;
 
     transform: translate(0, -50%);
-    mask-image: linear-gradient(to bottom, transparent 0%, black 50%, transparent 75%);
+    transition: transform 0.05s ease-in;
+    mask-image: linear-gradient(to bottom, transparent 2%, black);
+    overflow-y: scroll;
 }
 
 #Clock
 {
     opacity: 0;
+    user-select: none;
+    pointer-events: none;
 }
 
 #timeOptionsContainer button
@@ -154,6 +159,27 @@ button
     padding: 0; margin: 0;
 }
 
+.fadeOutTimeWheel
+{
+    animation: fadeOut forwards ease-in 0.25s;
+}
+
+.fadeInClock
+{
+    animation: fadeIn forwards ease-in 0.25s;
+}
+
+@keyframes fadeOut
+{
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes fadeIn
+{
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
 
 #caret, #caret_ghost
 {

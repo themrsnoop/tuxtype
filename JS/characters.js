@@ -1,7 +1,7 @@
 import { randMand } from './linux_gacha.js';
 import { update_meaning } from './linux_meaning.js';
 import { updateCaretPosition } from './caret.js';
-import { Timer } from './timer.js';
+import { BeginTimer } from './timer.js';
 import { logCharacter, logCMDS, unLogCharacter, updateWPMLog } from './tick.js';
 import { get_current_data, update_data } from "./distro_selector.js";
 
@@ -123,7 +123,7 @@ export function getTimer() { return runningTimer; };
 
 function initialize()
 {
-    Timer();
+    BeginTimer();
     runningTimer = true;
 
     // removes blinking on typing start
@@ -141,10 +141,7 @@ let currentKey = "";
 function keyInput(event)
 {
     // basically a general do once check now
-    if (!runningTimer)
-    {
-        initialize();
-    }
+    if (!runningTimer) initialize();
 
     const keyname = event.key;
     currentKey = keyname;
@@ -181,7 +178,7 @@ function keyInput(event)
         updateCharacterState(currentCharacterIndex, "correct");
         logCharacter()
     }
-    else 
+    else
     {
         updateSpanClass(currentCharacter, "incorrect");
         updateCharacterState(currentCharacterIndex, "incorrect");

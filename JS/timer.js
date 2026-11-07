@@ -42,26 +42,11 @@ function Timer(iTime)
 
 
     clock.innerHTML = `${userFriendlySeconds}:${userFriendlyMS}`;
-    console.log(elapsedMS);
 
     requestAnimationFrame(Timer);
 }
 
 
-//wheel input
-const timerWheel = document.getElementById("timeOptionsContainer");
-timerWheel.addEventListener('wheel', (event) => {
-  event.preventDefault();
-  let scrollDirection = Math.sign(event.deltaY);
-  shiftWheel(scrollDirection * -1)
-});
-
-//touchpad scroll
-timerWheel.addEventListener('touchmove', (event) => {
-  event.preventDefault();
-  let scrollDirection = Math.sign(event.deltaY);
-  shiftWheel(scrollDirection * -1)
-});
 
 //time options are all defined here. make sure to manually sync up the html as well.
 function returnTime(i)
@@ -99,26 +84,30 @@ function returnWheelMaskStyle(i)
   }
 }
 
-
-
 const wheelContainer = document.getElementById("ExtrasContainer");
-let containerY = wheelContainer.getBoundingClientRect().y; //in px
-let buttonY = timerWheel.children[0].getBoundingClientRect().y; //specific element doesnt matter, just need the size of the button. | ALSO is in px.
+//let containerY = wheelContainer.getBoundingClientRect().y; //in px
+//let buttonY = timerWheel.children[0].getBoundingClientRect().y; //specific element doesnt matter, just need the size of the button. | ALSO is in px.
 
 let currentItem = 2; //[0, 4]
 //needs to be -50%!
-let currentY = containerY / 2; //finds it in px.
-
+let currentY = -50; //finds it in px.
 
 console.log(`stepSize calculated as: ${currentY}`);
 
-function shiftWheel(dir)
+//increment wheel value ? override;
+function shiftWheel(dir, overide = false)
 {
-  //transformation
-  if ((currentItem + dir) < 0 || (currentItem + dir) > 4) return; //clamps
-  currentItem += dir;
-
-  currentY += (dir * buttonY);
+  if (overide) {
+    currentItem = dir;
+    console.log("DSDSDSD");
+  }
+  else {
+    //transformation
+    if ((currentItem + dir) < 0 || (currentItem + dir) > 4) return; //clamps
+    currentItem += dir;
+  }
+  //console.log(currentItem);
+  currentY += (dir * 21.5);
   timerWheel.style.transform = `translate(0, ${currentY}%)`;
   timerWheel.style.maskImage = returnWheelMaskStyle(5 - (currentItem ));
 }
@@ -136,6 +125,22 @@ export function BeginTimer()
   //fades in old clock
   clock.classList.add("fadeInClock");
 }
+
+//wheel input
+const timerWheel = document.getElementById("timeOptionsContainer");
+timerWheel.addEventListener('wheel', (event) => {
+  event.preventDefault();
+  let scrollDirection = Math.sign(event.deltaY);
+  shiftWheel(scrollDirection * -1)
+});
+
+//allows for indivudual button clicking
+const buttons = timerWheel.querySelectorAll("button");
+buttons.forEach((button) => {
+  button.addEventListener('click', (event) => {
+    shiftWheel(button.dataset.btnItem, true);
+  });
+});
 
 //initalizes style on load
 shiftWheel(0)

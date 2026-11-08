@@ -1,11 +1,11 @@
 import { load } from "./characters.js";
 
-const arch_data = await (await fetch("linux_commands_arch.json")).json();
-const debian_data = await (await fetch("linux_commands_debian.json")).json();
-const nix_data = await (await fetch("linux_commands_nix.json")).json();
-const gentoo_data = await (await fetch("linux_commands_gentoo.json")).json();
-const fedora_data = await (await fetch("linux_commands_fedora.json")).json();
-const kernel_data = await (await fetch("linux_commands_kernel.json")).json();
+const arch_data = await (await fetch("JSON/linux_commands_arch.json")).json();
+const debian_data = await (await fetch("JSON/linux_commands_debian.json")).json();
+const nix_data = await (await fetch("JSON/linux_commands_nix.json")).json();
+const gentoo_data = await (await fetch("JSON/linux_commands_gentoo.json")).json();
+const fedora_data = await (await fetch("JSON/linux_commands_fedora.json")).json();
+const kernel_data = await (await fetch("JSON/linux_commands_kernel.json")).json();
 
 let current_data = kernel_data
 

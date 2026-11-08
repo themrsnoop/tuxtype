@@ -24,7 +24,7 @@ export function retrieveCMDS() { return cmds; }
 //tick ticks
 let lastFrameTime;
 let now;
-let deltaTime;
+let dTime;
 let startTime
 
 //important inialization, called by character.js
@@ -38,7 +38,7 @@ function tick()
     now = performance.now();
 
     //deltatime is in ms (integer)
-    deltaTime = now - lastFrameTime;
+    dTime = now - lastFrameTime;
     lastFrameTime = now;
     if (getTimer!=true) {
         updateWPM(now);
@@ -54,7 +54,7 @@ tick();
 
 function getCPM(cur)
 {
-    let elapsedTime = Math.max(1000, cur - startTime);
+    let elapsedTime = cur - startTime;
     let cpm = char_log / (elapsedTime / 60000);
     return cpm
 }

@@ -3,12 +3,13 @@ import { updateWPMLog } from './tick.js';
 import { buildEndgame } from './endgame.js';
 const completionContainer = document.getElementById("completionContainer");
 
+let completedGame = false;
+
 //defined later in FinalizeTime();
 let maxTime; //in seconds
 let currentMiliseconds;
 let startTime = -1;
 
-//uses actual seconds now instead of "trying" to use actual seconds.
 const clock = document.getElementById("Clock");
 function Timer(iTime)
 {
@@ -18,8 +19,9 @@ function Timer(iTime)
     const now = performance.now(); //ms elapsed since start.
     const elapsedMS = now - startTime;
 
-    if (currentMiliseconds <= 0)
+    if (currentMiliseconds <= 0 && !completedGame)
     {
+        completedGame = true;
         resetTimer();
         //stops logging WPM
         updateWPMLog(true);
@@ -40,9 +42,7 @@ function Timer(iTime)
     //ensures all numbers have at least 2 digits | (2 = "02")
     let userFriendlyMS = String(Math.round(simplifiedMiliseconds)).padStart(2, '0');
 
-
     clock.innerHTML = `${userFriendlySeconds}:${userFriendlyMS}`;
-
     requestAnimationFrame(Timer);
 }
 
@@ -66,6 +66,24 @@ function returnTime(i)
   }
 }
 
+let currentItem = 2; //[0, 4]
+const increment = 21.5; //fine tuned.
+
+//slightly glows the selected <p>
+function updateTimeButtonStyles()
+{
+  const buttons = timerWheel.querySelectorAll("button");
+  for (let b = 0; b < buttons.length; b++)
+  {
+    const p = buttons[b].children[0];
+    if (b == (4 - currentItem)) {
+      p.classList.add("selectedTime");
+    } else {
+      p.className = "";
+    }
+  }
+}
+
 //all manually defined btw, too lazy to create a function that calcs the gradient automatically.
 function returnWheelMaskStyle(i)
 {
@@ -84,8 +102,6 @@ function returnWheelMaskStyle(i)
   }
 }
 
-let currentItem = 2; //[0, 4]
-const increment = 21.5; //fine tuned.
 
 function setWheel(index)
 {
@@ -95,6 +111,7 @@ function setWheel(index)
   const y = -50 + (currentItem - 2) * increment;
   timerWheel.style.transform = `translate(0, ${y}%)`;
   timerWheel.style.maskImage = returnWheelMaskStyle(5 - currentItem);
+  updateTimeButtonStyles();
 }
 
 function shiftWheel(dir) {

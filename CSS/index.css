@@ -117,6 +117,8 @@ button
     gap: 2ch;
 }
 
+/* ensures every div BUT the wheel starts hidden */
+#ExtrasContainer > div:not(#timeOptionsContainer) { opacity: 0; }
 
 #timeOptionsContainer
 {

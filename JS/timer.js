@@ -111,8 +111,14 @@ export function BeginTimer()
   //plays fadeOut animation
   timerWheel.classList.add("fadeOutTimeWheel");
 
-  //fades in old clock
-  clock.classList.add("fadeInClock");
+  const statContents = document.getElementById("ExtrasContainer").children;
+
+  //fades in all the elements asside from the timer wheel AND the regular timer.
+  clock.classList.add("fadeInClock"); //bc its set manually here
+  for (const stat of statContents) {
+    if (stat.id == "timeOptionsContainer" || stat.id == "Clock") continue;
+    stat.classList.add("fadeInClock");
+  }
 }
 
 //wheel input

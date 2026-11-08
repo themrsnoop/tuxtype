@@ -2,16 +2,11 @@ import { caretTick } from './caret.js';
 import { lerpColor } from './math.js';
 import { getTimer } from './characters.js';
 
-//tick ticks
-let lastFrameTime;
-let now;
-let deltaTime;
-
 const wpmText = document.getElementById("wpm");
 const cmdText = document.getElementById("cmds")
 const cpmText = document.getElementById("cpm")
 
-let startTime = new Date();
+
 
 let char_log = 0;
 export function logCharacter() {char_log++;}
@@ -20,21 +15,32 @@ export function unLogCharacter() {char_log--;}
 let cmds = 0;
 export function logCMDS() {cmds++;}
 
-//used for the final graph! is updated on tick!
+//used for the final graph! is updated on tick
 let wpmLOG = [];
 
 export function retrieveWPMOverTime() { return wpmLOG; }
 export function retrieveCMDS() { return cmds; }
 
+//tick ticks
+let lastFrameTime;
+let now;
+let deltaTime;
+let startTime
+
+//important inialization, called by character.js
+export function start()
+{
+  startTime = performance.now();
+}
+
 function tick()
 {
-    now = new Date();
+    now = performance.now();
 
     //deltatime is in ms (integer)
     deltaTime = now - lastFrameTime;
     lastFrameTime = now;
     if (getTimer!=true) {
-        now = new Date();
         updateWPM(now);
         updateCPM(now);
         updateCMDS();

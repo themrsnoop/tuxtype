@@ -14,7 +14,8 @@ export function get_current_data(){
 }
 
 export function update_data(){
-    let cur = document.getElementsByClassName("selectedDistro")
+    const par = document.getElementById("selectedDistro").parentElement;
+    let cur = par.getElementsByTagName("p")[0]; //bad code but like there should only ever be one <p>
     switch(cur.innerHTML){
         case 'ARCH': current_data = arch_data; break;
         case 'DEBIAN': current_data = debian_data; break;

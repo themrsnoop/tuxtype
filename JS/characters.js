@@ -2,7 +2,7 @@ import { randMand } from './linux_gacha.js';
 import { update_meaning } from './linux_meaning.js';
 import { updateCaretPosition } from './caret.js';
 import { BeginTimer } from './timer.js';
-import { logCharacter, logCMDS, unLogCharacter, updateWPMLog } from './tick.js';
+import { logCharacter, logCMDS, unLogCharacter, updateWPMLog, start } from './tick.js';
 import { get_current_data, update_data } from "./distro_selector.js";
 
 let keyContainer;
@@ -40,7 +40,6 @@ function updateCharacterArray(c) {
     const newCharacterObject = { char: c, real: null, state: char_state.Pending };
     characters.push(newCharacterObject);
 }
-
 
 // ALSO updates the charArray bc the enum was never actually being updated from .Pending!
 function updateSpanClass(span, classString)
@@ -132,6 +131,7 @@ function initialize()
     caret.className = "";
     caret_ghost.className = "";
 
+    start(); //tick start.
     //begins logging WPM
     updateWPMLog(false);
 }

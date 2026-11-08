@@ -38,7 +38,7 @@ function renderXAxisIntervals(totalT)
 {
   const intervalContainer = document.getElementById("timeIntervals");
   if (intervalContainer.hasChildNodes()) return; //stops func from being called more than once, idk why it is.
-  const intervalCount = 5; //(exluding 0)
+  const intervalCount = 4; //(exluding 0)
 
   for (let i = 0; i < intervalCount + 1; i++)
   {

@@ -19,7 +19,7 @@ export function update_data(){
     switch(cur.innerHTML){
         case 'ARCH': current_data = arch_data; break;
         case 'DEBIAN': current_data = debian_data; break;
-        case 'NIX': current_data = nix_data; break;
+        case 'NIXOS': current_data = nix_data; break;
         case 'GENTOO': current_data = gentoo_data; break;
         case 'KERNEL': current_data = kernel_data; break;
         case 'FEDORA': current_data = fedora_data; break;

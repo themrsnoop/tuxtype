@@ -7,3 +7,13 @@ Tuxtype includes various modes based on different distros. The commands for thes
 We simply extract this data and convert it into user-friendly strings that are randomly assigned to be the next prompt (again, given the user selected mode/distro). 
 
 Aside from this, much of the frontend was obviously inspired by [monkeytype](https://www.monkeytype.com), and uses nothing more than standard CSS.
+---
+## Implemented Distros
+- [x] Arch
+- [x] Fedora
+- [x] Debian
+- [x] NixOS
+- [x] Gentoo
+coming later
+- Void Linux
+- OpenBSD

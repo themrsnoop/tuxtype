@@ -84,32 +84,21 @@ function returnWheelMaskStyle(i)
   }
 }
 
-const wheelContainer = document.getElementById("ExtrasContainer");
-//let containerY = wheelContainer.getBoundingClientRect().y; //in px
-//let buttonY = timerWheel.children[0].getBoundingClientRect().y; //specific element doesnt matter, just need the size of the button. | ALSO is in px.
-
 let currentItem = 2; //[0, 4]
-//needs to be -50%!
-let currentY = -50; //finds it in px.
+const increment = 21.5; //fine tuned.
 
-console.log(`stepSize calculated as: ${currentY}`);
-
-//increment wheel value ? override;
-function shiftWheel(dir, overide = false)
+function setWheel(index)
 {
-  if (overide) {
-    currentItem = dir;
-    console.log("DSDSDSD");
-  }
-  else {
-    //transformation
-    if ((currentItem + dir) < 0 || (currentItem + dir) > 4) return; //clamps
-    currentItem += dir;
-  }
-  //console.log(currentItem);
-  currentY += (dir * 21.5);
-  timerWheel.style.transform = `translate(0, ${currentY}%)`;
-  timerWheel.style.maskImage = returnWheelMaskStyle(5 - (currentItem ));
+  if (index < 0 || index > 4) return; //clamps
+  currentItem = index;
+
+  const y = -50 + (currentItem - 2) * increment;
+  timerWheel.style.transform = `translate(0, ${y}%)`;
+  timerWheel.style.maskImage = returnWheelMaskStyle(5 - currentItem);
+}
+
+function shiftWheel(dir) {
+  setWheel(currentItem + dir);
 }
 
 //called by characters.js for initialization.
@@ -138,7 +127,7 @@ timerWheel.addEventListener('wheel', (event) => {
 const buttons = timerWheel.querySelectorAll("button");
 buttons.forEach((button) => {
   button.addEventListener('click', (event) => {
-    shiftWheel(button.dataset.btnItem, true);
+     setWheel(Number(button.dataset.btnItem));
   });
 });
 

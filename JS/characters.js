@@ -1,5 +1,5 @@
 import { randMand } from './linux_gacha.js';
-import { update_meaning } from './linux_meaning.js';
+import { update_meaning, doMeaningFocus } from './linux_meaning.js';
 import { updateCaretPosition } from './caret.js';
 import { BeginTimer } from './timer.js';
 import { logCharacter, logCMDS, unLogCharacter, updateWPMLog, start } from './tick.js';
@@ -34,8 +34,26 @@ const current_char_array = {
 }
 
 export const characters = current_char_array.charray;
-
 // random helpers
+
+function checkIfDone() {
+    for(const letter of current_char_array.charray){
+        if(letter.state==char_state.Pending){
+            return false;
+        }
+    }
+    return true;
+}
+
+function checkIfEmpty() {
+    for(const letter of current_char_array.charray){
+        if(letter.state!=char_state.Pending){
+            return false;
+        }
+    }
+    return true;
+}
+
 function updateCharacterArray(c) {
     const newCharacterObject = { char: c, real: null, state: char_state.Pending };
     characters.push(newCharacterObject);
@@ -70,7 +88,7 @@ function updateCharacterState(index, enumString)
 
 function isValidIndex(array, i) { return (i >= 0 && i < array.length); }
 
-// permanent function that randomly fills the character array on page reload.
+// *permanent function that randomly fills the character array on page reload.
 function generateText()
 {
     let string_text = randMand(get_current_data()); // returns string
@@ -78,9 +96,7 @@ function generateText()
     for (const letter of string_text) {
         updateCharacterArray(letter);
     }
-    // adds a space per word
     update_meaning(string_text)
-    updateCharacterArray(" ");
     renderContainer();
 }
 
@@ -140,11 +156,15 @@ let currentKey = "";
 
 function keyInput(event)
 {
-    // basically a general do once check now
-    if (!runningTimer) initialize();
-
     const keyname = event.key;
     currentKey = keyname;
+
+    if (!runningTimer){
+        if (keyname.length == 1){
+            initialize();
+        }
+        else if (keyname != "Enter"){ return }
+    }
 
     if (keyname == "ArrowLeft" || keyname == "Backspace")
     {
@@ -158,8 +178,10 @@ function keyInput(event)
         updateCaretPosition(currentCharacterIndex);
         return;
     }
-    else if (keyname == "Enter"){
-        //if (characters[currentCharacterIndex]!=characters.length-1) return;
+    else if (keyname == "Enter" && (checkIfDone() || checkIfEmpty())){
+        if(checkIfDone()){
+            doMeaningFocus()
+        }
         new_line()
         return
     }
@@ -202,6 +224,3 @@ export function load()
 }
 
 load();
-
-// updates caret position on window resize
-window.addEventListener('resize', updateCaretPosition);

@@ -1,4 +1,7 @@
 import { get_current_data } from "./distro_selector.js";
+let meaningBox = document.getElementById("Meaning");
+let helpCheck = document.getElementById("Help");
+helpCheck.checked = true; // do not leave here. for debug
 
 function find_node(data, name) {
   return data.commands[name] ?? data.builtins[name];
@@ -28,7 +31,6 @@ function give_meaning(data, commandText) {
 
 export function update_meaning(text)
 {
-  let meaningBox = document.getElementById("Meaning");
   let stack = give_meaning(get_current_data(), text)
   let output = "";
   for (let i = 0; i<stack.length; i++){
@@ -36,4 +38,9 @@ export function update_meaning(text)
   }
 
   meaningBox.innerHTML = output
+}
+
+export function doMeaningFocus(){
+  if(!helpCheck.checked){return}
+  meaningBox.class = "glow"
 }

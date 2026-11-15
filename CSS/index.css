@@ -230,3 +230,19 @@ button
 #Meaning{
     white-space: pre-wrap;
 }
+
+.HelpContainer{
+    position: relative;
+    bottom: -25px;
+    left: -25px;
+}
+
+.glow {
+    color: #fff;
+    animation: pulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+    from { text-shadow: 0 0 4px #0ff, 0 0 8px #0ff; }
+    to   { text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 30px #0ff; }
+}

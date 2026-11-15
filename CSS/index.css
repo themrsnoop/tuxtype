@@ -142,6 +142,7 @@ button
     transition: transform 0.05s ease-in;
     mask-image: linear-gradient(to bottom, transparent 2%, black);
     overflow-y: scroll;
+    overflow: hidden;
 }
 
 #Clock

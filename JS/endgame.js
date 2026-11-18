@@ -9,6 +9,7 @@ const X = canvas.getBoundingClientRect().width;
 const Y = canvas.getBoundingClientRect().height;
 
 //accounting for differing device pixel ratioossss
+const dpr = window.devicePixelRatio || 1;
 canvas.width = Math.round(X * dpr);
 canvas.height = Math.round(Y * dpr);
 ctx.scale(dpr, dpr);

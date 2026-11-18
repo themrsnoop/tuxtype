@@ -58,7 +58,7 @@ function renderXAxisIntervals(totalT)
 const padding = 5;
 
 //sets the max Y of the graph to either 150 or the highest WPM scored.
-const range = Math.max(120, highestWPM() + padding);
+
 function RenderGraph(totalTime)
 {
     const xPadding = X / padding;
@@ -123,6 +123,8 @@ function renderLine()
 
 export function buildEndgame(totalTime)
 {
+    const range = Math.max(120, highestWPM() + padding);
+    
     //retrieves from tick
     WPMs = retrieveWPMOverTime();
     RenderGraph(totalTime);

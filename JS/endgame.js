@@ -7,6 +7,12 @@ const canvas = document.getElementById("graph");
 const ctx = canvas.getContext("2d");
 const X = canvas.getBoundingClientRect().width;
 const Y = canvas.getBoundingClientRect().height;
+
+//accounting for differing device pixel ratioossss
+canvas.width = Math.round(X * dpr);
+canvas.height = Math.round(Y * dpr);
+ctx.scale(dpr, dpr);
+
 canvas.width = Math.round(X);
 canvas.height = Math.round(Y);
 
@@ -67,7 +73,7 @@ function RenderGraph(totalTime)
         for (let y = 0; y < columnY; y++)
         {
             ctx.fillStyle = lerpColor(245, 162, 100, 170, 255, 100, (y / range));
-            ctx.fillRect(x * padding, Y - (y * yPadding), 2, 2);
+            ctx.fillRect(Math.round(x * padding), Math.round(Y - (y * yPadding)), 2, 2); //integer pixels innit mate
         }
     }
 }

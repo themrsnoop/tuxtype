@@ -8,6 +8,8 @@ const ctx = canvas.getContext("2d");
 const X = canvas.getBoundingClientRect().width;
 const Y = canvas.getBoundingClientRect().height;
 
+let range = 120;
+
 //accounting for differing device pixel ratioossss
 const dpr = window.devicePixelRatio || 1;
 canvas.width = Math.round(X * dpr);
@@ -123,7 +125,7 @@ function renderLine()
 
 export function buildEndgame(totalTime)
 {
-    const range = Math.max(120, highestWPM() + padding);
+    range = Math.max(120, highestWPM() + padding);
     
     //retrieves from tick
     WPMs = retrieveWPMOverTime();

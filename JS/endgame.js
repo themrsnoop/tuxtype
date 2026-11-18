@@ -100,10 +100,10 @@ function renderAxisss()
 
         //text
         ctx.font = "16px monospace";
-        ctx.fillStyle = "rgb(128, 128, 128)";
+        ctx.fillStyle = "rgb(255, 255, 255)";
 
         const textTranslation = 12;
-        ctx.fillText(`${Math.abs((range / axisCount) * (y - axisCount))}wpm`, textTranslation, (y * spacing) - textTranslation);
+        ctx.fillText(`${Math.abs((range / axisCount) * (y - axisCount))}`, textTranslation, (y * spacing) - textTranslation);
         //text
     }
 }
